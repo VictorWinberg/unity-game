@@ -7,11 +7,16 @@ public class Player : LivingEntity {
 
 	public float moveSpeed = 5;
 
-	public Crosshairs  crosshairs;
+	public Crosshairs crosshairs;
 
 	protected Camera viewCamera;
 	PlayerController controller;
 	GunController gunController;
+
+	public string horizontal { get; set;}
+	public string vertical { get; set;}
+
+	public string fire1 { get; set;}
 
 	public bool aimbot = false;
 
@@ -25,7 +30,7 @@ public class Player : LivingEntity {
 
 	void Update () {
 		// Movement input
-		Vector3 moveInput = new Vector3 (Input.GetAxisRaw ("Horizontal"), 0, Input.GetAxisRaw ("Vertical"));
+		Vector3 moveInput = new Vector3 (Input.GetAxisRaw (horizontal), 0, Input.GetAxisRaw (vertical));
 		Vector3 moveVelocity = moveInput.normalized * moveSpeed;
 		controller.Move (moveVelocity);
 
@@ -41,7 +46,7 @@ public class Player : LivingEntity {
 		}
 
 		// Weapon input
-		if (Input.GetMouseButton(0)) {
+		if (Input.GetButton(fire1)) {
 			if (aimbot) {
 				// Look input
 				int enemyLayer = 1 << LayerMask.NameToLayer ("Enemy");
@@ -59,7 +64,7 @@ public class Player : LivingEntity {
 			}
 			gunController.OnTriggerHold();
 		}
-		if (Input.GetMouseButtonUp(0)) {
+		if (Input.GetButtonUp(fire1)) {
 			gunController.OnTriggerRelease();
 		}
 		if (Input.GetKeyDown (KeyCode.R)) {

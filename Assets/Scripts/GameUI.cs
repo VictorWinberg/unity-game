@@ -14,22 +14,24 @@ public class GameUI : MonoBehaviour {
 	private GameManager manager;
 
 	Spawner spawner;
-	Player player;
-	
+	Player p1, p2;
+
 	void Start () {
 		manager = FindObjectOfType<GameManager>();
 		spawner = FindObjectOfType<Spawner>();
 		spawner.OnNewWave += OnNewWave;
-		player = FindObjectOfType<Player>();
-		player.OnDeath += OnGameOver;
+		p1 = manager.getPlayer1();
+		p2 = manager.getPlayer2();
+		p1.OnDeath += OnGameOver;
+		p2.OnDeath += OnGameOver;
 	}
 
 	void Update() {
 		scoreUI.text = Scoreboard.score.ToString("D6");
 		float healthPercent = 0;
-		if (player != null) {
-			healthPercent = player.health / player.startingHealth;
-			healthbarHp.text = player.health + "/" + player.startingHealth;
+		if (p1 != null && p2 != null) {
+			healthPercent = (p1.health + p2.health) / (p1.startingHealth + p2.startingHealth);
+			healthbarHp.text = (p1.health + p2.health) + "/" + (p1.startingHealth + p2.startingHealth);
 		}
 		healthbar.localScale = new Vector3 (healthPercent, 1, 1);
 	}
@@ -65,7 +67,7 @@ public class GameUI : MonoBehaviour {
 			yield return null;
 		}
 	}
-	
+
 	void OnGameOver () {
 		Cursor.visible = true;
 		StartCoroutine(Fade(Color.clear, new Color(1, 1, 1, .8f), 1));
