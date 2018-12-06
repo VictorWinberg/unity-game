@@ -54,9 +54,9 @@ public class Menu : MonoBehaviour {
 	}
 
 	public void Play() {
-		SceneManager.LoadScene ("Game");
+		SceneManager.LoadScene ("LevelSelect");
 	}
-	
+
 	public void MainMenu() {
 		mainMenuHolder.SetActive (true);
 		optionsMenuHolder.SetActive (false);
