@@ -43,6 +43,13 @@ public class Gun : MonoBehaviour {
 		reloading = false;
 	}
 
+	void Update() {
+		if(!reloading) {
+			float angle = Mathf.LerpAngle(transform.localEulerAngles.x, 0f, 10f * Time.deltaTime);
+			transform.localEulerAngles = new Vector3(angle, 0, 0);
+		}
+	}
+
 	void LateUpdate() {
 		// Animate the recoil
 		transform.localPosition = Vector3.SmoothDamp (transform.localPosition, Vector3.zero, ref recoilSmoothDampVelocity, recoilRecoverTime);
@@ -80,14 +87,14 @@ public class Gun : MonoBehaviour {
 			recoilAngle += Random.Range(recoilAngleMinMax.x, recoilAngleMinMax.y);
 			recoilAngle = Mathf.Clamp(recoilAngle, 0, 30);
 
-			AudioManager.instance.PlaySound (shootAudio, transform.position); 
+			AudioManager.instance.PlaySound (shootAudio, transform.position);
 		}
 	}
 
 	public void Reload() {
 		if (!reloading && bulletsRemainingInMag != magSize) {
 			StartCoroutine (AnimateReload());
-			AudioManager.instance.PlaySound (reloadAudio, transform.position); 
+			AudioManager.instance.PlaySound (reloadAudio, transform.position);
 		}
 	}
 
@@ -121,10 +128,5 @@ public class Gun : MonoBehaviour {
 	public void OnTriggerRelease() {
 		triggerReleased = true;
 		burstShotsRemaining = burstCount;
-	}
-
-	public void Aim (Vector3 aimPoint){
-		if(!reloading)
-			transform.LookAt (aimPoint);
 	}
 }

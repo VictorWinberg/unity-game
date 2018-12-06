@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour {
 	private GameObject camera;
 	private MapGenerator map;
 	private Scoreboard scoreboard;
-	private Crosshairs crosshairs;
 	private Player p1, p2;
 	private Enemy enemy;
 	private Spawner spawner;
@@ -19,10 +18,12 @@ public class GameManager : MonoBehaviour {
 		p1.horizontal = "Horizontal_P1";
 		p1.vertical = "Vertical_P1";
 		p1.fire1 = "Fire1_P1";
+		p1.fire2 = "Fire2_P1";
         p2 = ((GameObject)Instantiate(Resources.Load ("Player"), Vector3.forward * 10, Quaternion.identity)).GetComponent<Player>();
 		p2.horizontal = "Horizontal_P2";
 		p2.vertical = "Vertical_P2";
 		p2.fire1 = "Fire1_P2";
+		p2.fire2 = "Fire2_P2";
 		enemy = ((GameObject)Resources.Load ("Enemy")).GetComponent<Enemy> ();
 		spawner = Spawner.Create ();
 		map = MapGenerator.Create();
@@ -32,7 +33,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Start () {
-		//p1.aimbot = false;
+		p1.aimbot = true;
+		p2.aimbot = true;
 		//p1.startingHealth = 100000;
 	}
 

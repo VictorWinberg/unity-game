@@ -7,8 +7,6 @@ public class Player : LivingEntity {
 
 	public float moveSpeed = 5;
 
-	public Crosshairs crosshairs;
-
 	protected Camera viewCamera;
 	PlayerController controller;
 	GunController gunController;
@@ -17,13 +15,13 @@ public class Player : LivingEntity {
 	public string vertical { get; set;}
 
 	public string fire1 { get; set;}
+	public string fire2 { get; set;}
 
 	public bool aimbot = false;
 
 	void Start () {
 		controller = GetComponent<PlayerController> ();
 		gunController = GetComponent<GunController> ();
-		crosshairs = FindObjectOfType<Crosshairs> ();
 		viewCamera = Camera.main;
 		FindObjectOfType<Spawner> ().OnNewWave += OnNewWave;
 	}
@@ -34,24 +32,13 @@ public class Player : LivingEntity {
 		Vector3 moveVelocity = moveInput.normalized * moveSpeed;
 		controller.Move (moveVelocity);
 
-		Ray ray = viewCamera.ScreenPointToRay (Input.mousePosition);
-		Plane groundPlane = new Plane (Vector3.up, Vector3.up * gunController.GunHeight);
-		float rayDistance;
-		Vector3 point = Vector3.zero;
-		if (groundPlane.Raycast (ray, out rayDistance)) {
-			point = ray.GetPoint (rayDistance);
-			//Debug.DrawLine(ray.origin,point,Color.red);
-			crosshairs.DetectTargets (ray);
-			LookAtTarget (point);
-		}
-
 		// Weapon input
 		if (Input.GetButton(fire1)) {
 			if (aimbot) {
 				// Look input
 				int enemyLayer = 1 << LayerMask.NameToLayer ("Enemy");
 				float minDist = Mathf.Infinity;
-				Vector3 closest = point;
+				Vector3 closest = transform.position + moveVelocity;
 				foreach (Collider hit in Physics.OverlapSphere (transform.position, 10f, enemyLayer)) {
 					float dist = Vector3.Distance (hit.transform.position, transform.position);
 					if (dist < minDist) {
@@ -59,15 +46,14 @@ public class Player : LivingEntity {
 						closest = hit.transform.position;
 					}
 				}
-				crosshairs.DetectTargets (!point.Equals (closest));
-				LookAtTarget (closest);
+				controller.Move (Vector3.ClampMagnitude(closest - transform.position, 0.01f));
 			}
 			gunController.OnTriggerHold();
 		}
 		if (Input.GetButtonUp(fire1)) {
 			gunController.OnTriggerRelease();
 		}
-		if (Input.GetKeyDown (KeyCode.R)) {
+		if (Input.GetButtonDown(fire2)) {
 			gunController.Reload();
 		}
 	}
@@ -78,13 +64,6 @@ public class Player : LivingEntity {
 		gunController.EquipGun (waveNumber - 1);
 	}
 
-	void LookAtTarget (Vector3 point) {
-		controller.LookAt (point);
-		crosshairs.transform.position = point;
-		if((new Vector2(point.x, point.z) - new Vector2(transform.position.x, transform.position.z)).sqrMagnitude > 1)
-			gunController.Aim (point);
-	}
-
 	public Gun getGun() {
 		return gunController.getGun ();
 	}
@@ -93,8 +72,7 @@ public class Player : LivingEntity {
 		return gunController.getGunWithIndex (gunIndex);
 	}
 
-	public override void Die ()
-	{
+	public override void Die () {
 		AudioManager.instance.PlaySound ("Player Death", transform.position);
 		base.Die ();
 	}

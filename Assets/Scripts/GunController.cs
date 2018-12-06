@@ -39,18 +39,12 @@ public class GunController : MonoBehaviour {
 		}
 	}
 
-	public void Aim(Vector3 aimPoint) {
-		if (gun != null) {
-			gun.Aim (aimPoint);
-		}
-	}
-
 	public void Reload() {
 		if (gun != null) {
 			gun.Reload ();
 		}
 	}
-	
+
 	public Gun getGun() {
 		return guns[gunIndex % guns.Length];
 	}

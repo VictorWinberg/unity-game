@@ -12,16 +12,17 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		body.MovePosition (body.position + velocity * Time.fixedDeltaTime);
-		
+		if (velocity != Vector3.zero) {
+			body.MovePosition (body.position + velocity * Time.fixedDeltaTime);
+			transform.rotation = Quaternion.Slerp(
+				transform.rotation,
+				Quaternion.LookRotation(velocity),
+				20f * Time.deltaTime
+			);
+		}
 	}
 
 	public void Move(Vector3 velocity) {
 		this.velocity = velocity;
-	}
-
-	public void LookAt (Vector3 lookPoint) {
-		Vector3 heightCorrectedPoint = new Vector3 (lookPoint.x, transform.position.y, lookPoint.z);
-		transform.LookAt (heightCorrectedPoint);
 	}
 }
