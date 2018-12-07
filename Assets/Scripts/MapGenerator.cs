@@ -6,7 +6,7 @@ public class MapGenerator : MonoBehaviour {
 	public Map[] maps;
 	public int mapIndex;
 
-	public Transform tilePrefab, obstaclePrefab, mapFloor, navmeshFloor, navmeshMaskPrefab;
+	public Transform tilePrefab, obstaclePrefab, wallPrefab, mapFloor, navmeshFloor, navmeshMaskPrefab;
 	public Vector2 maxMapSize;
 
 	[Range (0, 1)]
@@ -24,7 +24,7 @@ public class MapGenerator : MonoBehaviour {
 		MapGenerator generator = new GameObject ("Map").AddComponent<MapGenerator> ();
 		generator.tilePrefab = ((GameObject) Resources.Load ("Tile")).transform;
 		generator.obstaclePrefab = ((GameObject) Resources.Load ("Obstacle")).transform;
-		generator.navmeshMaskPrefab = ((GameObject) Resources.Load ("Navmesh Mask")).transform;
+		generator.navmeshMaskPrefab = ((GameObject) Resources.Load ("NavmeshMask")).transform;
 		generator.maxMapSize = new Vector2 (40, 40);
 		generator.mapIndex = 0;
 		generator.outlinePercent = .1f;
@@ -164,29 +164,23 @@ public class MapGenerator : MonoBehaviour {
 		maskBottom.localScale = new Vector3 (maxMapSize.x, 1, (maxMapSize.y - currentMap.mapSize.y) / 2f) * tileSize;
 
 		// Creating walls
-		Transform wallWest = new GameObject ("Wall(Clone)").transform;
-		BoxCollider coll = wallWest.gameObject.AddComponent<BoxCollider> ();
-		coll.size = new Vector3 (1, 10, (currentMap.mapSize.y + .5f) * tileSize);
-		wallWest.position = Vector3.left * currentMap.mapSize.x / 2f * tileSize + Vector3.up * (coll.size.y / 2f - .1f);
+		int height = 2;
+
+		Transform wallWest = Instantiate (wallPrefab, Vector3.left * (0.5f + currentMap.mapSize.x / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
 		wallWest.parent = mapHolder;
+		wallWest.localScale = new Vector3 (tileSize, height, currentMap.mapSize.y * tileSize);
 
-		Transform wallEast = new GameObject ("Wall(Clone)").transform;
-		coll = wallEast.gameObject.AddComponent<BoxCollider> ();
-		coll.size = new Vector3 (1, 10, (currentMap.mapSize.y + .5f) * tileSize);
-		wallEast.position = Vector3.right * currentMap.mapSize.x / 2f * tileSize + Vector3.up * (coll.size.y / 2f - .1f);
+		Transform wallEast = Instantiate (wallPrefab, Vector3.right * (0.5f + currentMap.mapSize.x / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
 		wallEast.parent = mapHolder;
+		wallEast.localScale = new Vector3 (tileSize, height, currentMap.mapSize.y * tileSize);
 
-		Transform wallNorth = new GameObject ("Wall(Clone)").transform;
-		coll = wallNorth.gameObject.AddComponent<BoxCollider> ();
-		coll.size = new Vector3 ((currentMap.mapSize.x + .5f) * tileSize, 10, 1);
-		wallNorth.position = Vector3.forward * currentMap.mapSize.y / 2f * tileSize + Vector3.up * (coll.size.y / 2f - .1f);
+		Transform wallNorth = Instantiate (wallPrefab, Vector3.forward * (0.5f + currentMap.mapSize.y / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
 		wallNorth.parent = mapHolder;
+		wallNorth.localScale = new Vector3 ((currentMap.mapSize.x + 2f) * tileSize, height, tileSize);
 
-		Transform wallSouth = new GameObject ("Wall(Clone)").transform;
-		coll = wallSouth.gameObject.AddComponent<BoxCollider> ();
-		coll.size = new Vector3 ((currentMap.mapSize.x + .5f) * tileSize, 10, 1);
-		wallSouth.position = Vector3.back * currentMap.mapSize.y / 2f * tileSize + Vector3.up * (coll.size.y / 2f - .1f);
+		Transform wallSouth = Instantiate (wallPrefab, Vector3.back * (0.5f + currentMap.mapSize.y / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
 		wallSouth.parent = mapHolder;
+		wallSouth.localScale = new Vector3 ((currentMap.mapSize.x + 2f) * tileSize, height, tileSize);
 
 		navmeshFloor.localScale = new Vector3 (maxMapSize.x, maxMapSize.y) * tileSize;
 		mapFloor.localScale = new Vector3 (currentMap.mapSize.x * tileSize, currentMap.mapSize.y * tileSize, 0.05f);
