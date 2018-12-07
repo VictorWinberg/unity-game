@@ -117,6 +117,8 @@ public class Spawner : MonoBehaviour {
 		spawnedEnemy.OnDeath += OnEnemyDeath;
 
 		spawnedEnemy.SetCharacteristics (currentWave.moveSpeed, currentWave.damage, currentWave.health, currentWave.skinColor);
+
+		Instantiate ((GameObject) Resources.Load ("Item"), spawnTile.position + Vector3.forward * 3f, Quaternion.identity);
 	}
 
 	void OnPlayerDeath () {
@@ -148,7 +150,7 @@ public class Spawner : MonoBehaviour {
 			enemiesRemainingAlive = enemiesRemainingToSpawn;
 
 			if (OnNewWave != null) OnNewWave (currentWaveNumber);
-			ResetPlayerPosition ();
+			// ResetPlayerPosition ();
 		}
 	}
 

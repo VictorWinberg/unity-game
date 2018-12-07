@@ -29,7 +29,7 @@ public class Enemy : LivingEntity {
 		pathfinder = GetComponent<UnityEngine.AI.NavMeshAgent> ();
 
 		if (GameObject.FindGameObjectWithTag ("Player") != null) {
-			hasTarget = true;
+			// hasTarget = true;
 
 			target = GameObject.FindGameObjectWithTag ("Player").transform;
 			targetEntity = target.GetComponent<LivingEntity> ();
@@ -47,7 +47,7 @@ public class Enemy : LivingEntity {
 
 			targetEntity.OnDeath += OnTargetDeath;
 
-			StartCoroutine (UpdatePath ());
+			// StartCoroutine (UpdatePath ());
 		}
 	}
 

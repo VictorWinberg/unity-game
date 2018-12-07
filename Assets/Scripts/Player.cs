@@ -17,6 +17,7 @@ public class Player : LivingEntity {
 	public string fire1 { get; set; }
 	public string fire2 { get; set; }
 
+	private GameObject item;
 	public bool aimbot = false;
 
 	void Start () {
@@ -32,29 +33,33 @@ public class Player : LivingEntity {
 		Vector3 moveVelocity = moveInput.normalized * moveSpeed;
 		controller.Move (moveVelocity);
 
-		// Weapon input
+		// Interaction input
 		if (Input.GetButton (fire1)) {
-			if (aimbot) {
-				// Look input
-				int enemyLayer = 1 << LayerMask.NameToLayer ("Enemy");
+			if (this.item == null) {
+				int pickableLayer = 1 << LayerMask.NameToLayer ("Pickable");
+				float maxDist = 2f;
 				float minDist = Mathf.Infinity;
-				Vector3 closest = transform.position + moveVelocity;
-				foreach (Collider hit in Physics.OverlapSphere (transform.position, 10f, enemyLayer)) {
+				GameObject item = null;
+				foreach (Collider hit in Physics.OverlapSphere (transform.position, maxDist, pickableLayer)) {
 					float dist = Vector3.Distance (hit.transform.position, transform.position);
-					if (dist < minDist) {
+					float dot = Vector3.Dot (transform.forward, (hit.transform.position - transform.position).normalized);
+					if (dist < minDist && dot > 0.7f) {
 						minDist = dist;
-						closest = hit.transform.position;
+						item = hit.gameObject;
 					}
 				}
-				controller.Move (Vector3.ClampMagnitude (closest - transform.position, 0.01f));
+				if (item != null) {
+					PickUp (item);
+				}
+			} else {
+				Drop ();
 			}
-			gunController.OnTriggerHold ();
 		}
 		if (Input.GetButtonUp (fire1)) {
-			gunController.OnTriggerRelease ();
+			// gunController.OnTriggerRelease ();
 		}
 		if (Input.GetButtonDown (fire2)) {
-			gunController.Reload ();
+			// gunController.Reload ();
 		}
 	}
 
@@ -62,6 +67,18 @@ public class Player : LivingEntity {
 		if (waveNumber != 1) startingHealth = (int) (startingHealth * 1.2f);
 		health = startingHealth;
 		gunController.EquipGun (waveNumber - 1);
+	}
+
+	void PickUp (GameObject item) {
+		item.transform.parent = transform;
+		item.GetComponent<Rigidbody> ().isKinematic = true;
+		this.item = item;
+	}
+
+	void Drop () {
+		item.transform.parent = null;
+		item.GetComponent<Rigidbody> ().isKinematic = false;
+		this.item = null;
 	}
 
 	public Gun getGun () {
