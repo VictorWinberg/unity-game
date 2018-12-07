@@ -113,12 +113,12 @@ public class Spawner : MonoBehaviour {
 			yield return null;
 		}
 		tileMaterial.color = initialColor;
-		Enemy spawnedEnemy = Instantiate (enemy, spawnTile.position + Vector3.up, Quaternion.identity) as Enemy;
-		spawnedEnemy.OnDeath += OnEnemyDeath;
+		// Enemy spawnedEnemy = Instantiate (enemy, spawnTile.position + Vector3.up, Quaternion.identity) as Enemy;
+		// spawnedEnemy.OnDeath += OnEnemyDeath;
 
-		spawnedEnemy.SetCharacteristics (currentWave.moveSpeed, currentWave.damage, currentWave.health, currentWave.skinColor);
+		// spawnedEnemy.SetCharacteristics (currentWave.moveSpeed, currentWave.damage, currentWave.health, currentWave.skinColor);
 
-		Instantiate ((GameObject) Resources.Load ("Item"), spawnTile.position + Vector3.forward * 3f, Quaternion.identity);
+		Instantiate ((GameObject) Resources.Load ("Item"), spawnTile.position + Vector3.up, Quaternion.identity);
 	}
 
 	void OnPlayerDeath () {

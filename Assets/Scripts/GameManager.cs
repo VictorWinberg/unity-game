@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour {
 		p1.vertical = "Vertical_P1";
 		p1.fire1 = "Fire1_P1";
 		p1.fire2 = "Fire2_P1";
-		p2 = ((GameObject) Instantiate (Resources.Load ("Player"), Vector3.forward * 2, Quaternion.identity)).GetComponent<Player> ();
+		p2 = ((GameObject) Instantiate (Resources.Load ("Player"), Vector3.forward, Quaternion.identity)).GetComponent<Player> ();
 		p2.horizontal = "Horizontal_P2";
 		p2.vertical = "Vertical_P2";
 		p2.fire1 = "Fire1_P2";

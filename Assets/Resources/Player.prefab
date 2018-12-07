@@ -30,6 +30,7 @@ GameObject:
   - component: {fileID: 11474258}
   - component: {fileID: 11465336}
   - component: {fileID: 11409580}
+  - component: {fileID: 114825567047016528}
   - component: {fileID: 11459832}
   m_Layer: 9
   m_Name: Player
@@ -252,7 +253,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingHealth: 80
   moveSpeed: 5
-  crosshairs: {fileID: 0}
   aimbot: 0
 --- !u!114 &11474258
 MonoBehaviour:
@@ -331,3 +331,15 @@ Prefab:
   m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 111926}
   m_IsPrefabAsset: 1
+--- !u!114 &114825567047016528
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 111926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 106374f594436429582fe928fbbb4d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemHold: {fileID: 475030}

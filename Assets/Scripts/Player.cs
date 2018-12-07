@@ -3,6 +3,7 @@ using UnityEngine;
 
 [RequireComponent (typeof (PlayerController))]
 [RequireComponent (typeof (GunController))]
+[RequireComponent (typeof (ItemController))]
 public class Player : LivingEntity {
 
 	public float moveSpeed = 5;
@@ -10,6 +11,7 @@ public class Player : LivingEntity {
 	protected Camera viewCamera;
 	PlayerController controller;
 	GunController gunController;
+	ItemController itemController;
 
 	public string horizontal { get; set; }
 	public string vertical { get; set; }
@@ -23,6 +25,7 @@ public class Player : LivingEntity {
 	void Start () {
 		controller = GetComponent<PlayerController> ();
 		gunController = GetComponent<GunController> ();
+		itemController = GetComponent<ItemController> ();
 		viewCamera = Camera.main;
 		FindObjectOfType<Spawner> ().OnNewWave += OnNewWave;
 	}
@@ -34,26 +37,8 @@ public class Player : LivingEntity {
 		controller.Move (moveVelocity);
 
 		// Interaction input
-		if (Input.GetButton (fire1)) {
-			if (this.item == null) {
-				int pickableLayer = 1 << LayerMask.NameToLayer ("Pickable");
-				float maxDist = 2f;
-				float minDist = Mathf.Infinity;
-				GameObject item = null;
-				foreach (Collider hit in Physics.OverlapSphere (transform.position, maxDist, pickableLayer)) {
-					float dist = Vector3.Distance (hit.transform.position, transform.position);
-					float dot = Vector3.Dot (transform.forward, (hit.transform.position - transform.position).normalized);
-					if (dist < minDist && dot > 0.7f) {
-						minDist = dist;
-						item = hit.gameObject;
-					}
-				}
-				if (item != null) {
-					PickUp (item);
-				}
-			} else {
-				Drop ();
-			}
+		if (Input.GetButtonDown (fire1)) {
+			itemController.Interact ();
 		}
 		if (Input.GetButtonUp (fire1)) {
 			// gunController.OnTriggerRelease ();
@@ -67,18 +52,6 @@ public class Player : LivingEntity {
 		if (waveNumber != 1) startingHealth = (int) (startingHealth * 1.2f);
 		health = startingHealth;
 		gunController.EquipGun (waveNumber - 1);
-	}
-
-	void PickUp (GameObject item) {
-		item.transform.parent = transform;
-		item.GetComponent<Rigidbody> ().isKinematic = true;
-		this.item = item;
-	}
-
-	void Drop () {
-		item.transform.parent = null;
-		item.GetComponent<Rigidbody> ().isKinematic = false;
-		this.item = null;
 	}
 
 	public Gun getGun () {
