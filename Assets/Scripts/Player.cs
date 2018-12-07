@@ -19,9 +19,6 @@ public class Player : LivingEntity {
 	public string fire1 { get; set; }
 	public string fire2 { get; set; }
 
-	private GameObject item;
-	public bool aimbot = false;
-
 	void Start () {
 		controller = GetComponent<PlayerController> ();
 		gunController = GetComponent<GunController> ();
@@ -51,7 +48,7 @@ public class Player : LivingEntity {
 	void OnNewWave (int waveNumber) {
 		if (waveNumber != 1) startingHealth = (int) (startingHealth * 1.2f);
 		health = startingHealth;
-		gunController.EquipGun (waveNumber - 1);
+		// gunController.EquipGun (waveNumber - 1);
 	}
 
 	public Gun getGun () {

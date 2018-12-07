@@ -4,16 +4,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
 	public static int waves = 30;
-
-	private GameObject camera;
-	private MapGenerator map;
-	private Scoreboard scoreboard;
 	private Player p1, p2;
 	private Enemy enemy;
 	private Spawner spawner;
-	private GameUI canvas;
 
 	void Awake () {
+		FindObjectOfType<MapGenerator> ().GenerateMap ();
 		p1 = ((GameObject) Instantiate (Resources.Load ("Player"), Vector3.zero, Quaternion.identity)).GetComponent<Player> ();
 		p1.horizontal = "Horizontal_P1";
 		p1.vertical = "Vertical_P1";
@@ -26,15 +22,11 @@ public class GameManager : MonoBehaviour {
 		p2.fire2 = "Fire2_P2";
 		enemy = ((GameObject) Resources.Load ("Enemy")).GetComponent<Enemy> ();
 		spawner = Spawner.Create ();
-		map = MapGenerator.Create ();
-		map.GenerateMap ();
 		GameObject audioManager = Instantiate (Resources.Load ("AudioManager"), Vector3.zero, Quaternion.identity) as GameObject;
 		audioManager.GetComponent<AudioManager> ().SetPlayer (p1.gameObject);
 	}
 
 	void Start () {
-		p1.aimbot = true;
-		p2.aimbot = true;
 		//p1.startingHealth = 100000;
 	}
 
