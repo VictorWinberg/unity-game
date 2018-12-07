@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 [RequireComponent (typeof (PlayerController))]
 [RequireComponent (typeof (GunController))]
@@ -11,11 +11,11 @@ public class Player : LivingEntity {
 	PlayerController controller;
 	GunController gunController;
 
-	public string horizontal { get; set;}
-	public string vertical { get; set;}
+	public string horizontal { get; set; }
+	public string vertical { get; set; }
 
-	public string fire1 { get; set;}
-	public string fire2 { get; set;}
+	public string fire1 { get; set; }
+	public string fire2 { get; set; }
 
 	public bool aimbot = false;
 
@@ -33,7 +33,7 @@ public class Player : LivingEntity {
 		controller.Move (moveVelocity);
 
 		// Weapon input
-		if (Input.GetButton(fire1)) {
+		if (Input.GetButton (fire1)) {
 			if (aimbot) {
 				// Look input
 				int enemyLayer = 1 << LayerMask.NameToLayer ("Enemy");
@@ -46,29 +46,29 @@ public class Player : LivingEntity {
 						closest = hit.transform.position;
 					}
 				}
-				controller.Move (Vector3.ClampMagnitude(closest - transform.position, 0.01f));
+				controller.Move (Vector3.ClampMagnitude (closest - transform.position, 0.01f));
 			}
-			gunController.OnTriggerHold();
+			gunController.OnTriggerHold ();
 		}
-		if (Input.GetButtonUp(fire1)) {
-			gunController.OnTriggerRelease();
+		if (Input.GetButtonUp (fire1)) {
+			gunController.OnTriggerRelease ();
 		}
-		if (Input.GetButtonDown(fire2)) {
-			gunController.Reload();
+		if (Input.GetButtonDown (fire2)) {
+			gunController.Reload ();
 		}
 	}
 
-	void OnNewWave(int waveNumber) {
-		if (waveNumber != 1) startingHealth = (int)(startingHealth * 1.2f);
+	void OnNewWave (int waveNumber) {
+		if (waveNumber != 1) startingHealth = (int) (startingHealth * 1.2f);
 		health = startingHealth;
 		gunController.EquipGun (waveNumber - 1);
 	}
 
-	public Gun getGun() {
+	public Gun getGun () {
 		return gunController.getGun ();
 	}
 
-	public Gun getGunWithIndex(int gunIndex) {
+	public Gun getGunWithIndex (int gunIndex) {
 		return gunController.getGunWithIndex (gunIndex);
 	}
 

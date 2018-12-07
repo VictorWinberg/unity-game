@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 [RequireComponent (typeof (UnityEngine.AI.NavMeshAgent))]
 public class Enemy : LivingEntity {
 
-	public enum State {Idle, Chasing, Attacking};
+	public enum State { Idle, Chasing, Attacking }
 	State currentState;
 
 	public ParticleSystem deathEffect;
@@ -25,7 +25,7 @@ public class Enemy : LivingEntity {
 
 	bool hasTarget;
 
-	void Awake() {
+	void Awake () {
 		pathfinder = GetComponent<UnityEngine.AI.NavMeshAgent> ();
 
 		if (GameObject.FindGameObjectWithTag ("Player") != null) {
@@ -51,7 +51,7 @@ public class Enemy : LivingEntity {
 		}
 	}
 
-	public void SetCharacteristics (float moveSpeed, int damage, float health, Color skinColor){
+	public void SetCharacteristics (float moveSpeed, int damage, float health, Color skinColor) {
 		pathfinder.speed = moveSpeed;
 
 		if (hasTarget) this.damage = damage;
@@ -63,20 +63,19 @@ public class Enemy : LivingEntity {
 		originalColour = skinMaterial.color;
 	}
 
-	public override void TakeHit (float damage, Vector3 hitPoint, Vector3 hitDirection)
-	{
+	public override void TakeHit (float damage, Vector3 hitPoint, Vector3 hitDirection) {
 		AudioManager.instance.PlaySound ("Impact", transform.position);
 		if (damage <= health) {
 			if (OnDeathStatic != null) {
 				OnDeathStatic ();
 			}
 			AudioManager.instance.PlaySound ("Enemy Death", transform.position);
-			Destroy(Instantiate(deathEffect.gameObject, hitPoint, Quaternion.FromToRotation(Vector3.forward, hitDirection)) as GameObject, deathEffect.startLifetime);
+			Destroy (Instantiate (deathEffect.gameObject, hitPoint, Quaternion.FromToRotation (Vector3.forward, hitDirection)) as GameObject, deathEffect.startLifetime);
 		}
 		base.TakeHit (damage, hitPoint, hitDirection);
 	}
 
-	void OnTargetDeath() {
+	void OnTargetDeath () {
 		hasTarget = false;
 		currentState = State.Idle;
 	}
@@ -98,7 +97,7 @@ public class Enemy : LivingEntity {
 		}
 	}
 
-	IEnumerator Attack() {
+	IEnumerator Attack () {
 		currentState = State.Attacking;
 		pathfinder.enabled = false;
 
@@ -114,13 +113,13 @@ public class Enemy : LivingEntity {
 
 		while (percent <= 1) {
 
-			if(percent >= 0.5f && !hasAppliedDamage) {
+			if (percent >= 0.5f && !hasAppliedDamage) {
 				hasAppliedDamage = true;
-				targetEntity.TakeDamage(damage);
+				targetEntity.TakeDamage (damage);
 			}
 			percent += Time.deltaTime * attackSpeed;
-			float interpolation = (-Mathf.Pow(percent,2) + percent) * 4;
-			transform.position = Vector3.Lerp(originalPosition, attackPosition, interpolation);
+			float interpolation = (-Mathf.Pow (percent, 2) + percent) * 4;
+			transform.position = Vector3.Lerp (originalPosition, attackPosition, interpolation);
 
 			yield return null;
 		}
@@ -131,18 +130,18 @@ public class Enemy : LivingEntity {
 	}
 
 	// UpdatePath is called once per refreshRate
-	IEnumerator UpdatePath() {
+	IEnumerator UpdatePath () {
 		float refreshRate = .25f;
 
 		while (hasTarget) {
 			if (currentState == State.Chasing) {
 				Vector3 dirToTarget = (target.position - transform.position).normalized;
-				Vector3 targetPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius + attackDistanceThreshold/2);
+				Vector3 targetPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius + attackDistanceThreshold / 2);
 				if (!dead) {
 					pathfinder.SetDestination (targetPosition);
 				}
 			}
-			yield return new WaitForSeconds(refreshRate);
+			yield return new WaitForSeconds (refreshRate);
 		}
 	}
 }

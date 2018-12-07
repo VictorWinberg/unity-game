@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 public class MuzzleFlash : MonoBehaviour {
 
@@ -9,11 +9,11 @@ public class MuzzleFlash : MonoBehaviour {
 
 	public float flashTime;
 
-	void Start() {
+	void Start () {
 		Deactivate ();
 	}
 
-	public void Activate() {
+	public void Activate () {
 		holder.SetActive (true);
 
 		int spriteIndex = Random.Range (0, sprites.Length);
@@ -24,7 +24,7 @@ public class MuzzleFlash : MonoBehaviour {
 		Invoke ("Deactivate", flashTime);
 	}
 
-	public void Deactivate() {
+	public void Deactivate () {
 		holder.SetActive (false);
 	}
 }

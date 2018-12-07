@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Collections;
 
 public class Menu : MonoBehaviour {
 
@@ -14,7 +14,7 @@ public class Menu : MonoBehaviour {
 
 	private int resolutionIndex;
 
-	void Awake() {
+	void Awake () {
 		GameObject go = Instantiate (Resources.Load ("AudioManager"), Vector3.zero, Quaternion.identity) as GameObject;
 
 		map = MapGenerator.Create ();
@@ -25,7 +25,7 @@ public class Menu : MonoBehaviour {
 	float starttime = 3f;
 	float timer = 0;
 
-	void Update() {
+	void Update () {
 		map.transform.RotateAround (Vector3.zero, Vector3.up, .3f);
 
 		timer += Time.deltaTime;
@@ -38,65 +38,65 @@ public class Menu : MonoBehaviour {
 
 	}
 
-	void Start() {
+	void Start () {
 		resolutionIndex = PlayerPrefs.GetInt ("Resolution index");
 		bool isFullscreen = (PlayerPrefs.GetInt ("Fullscreen") == 1) ? true : false;
 
-		volumeSliders [0].value = AudioManager.instance.masterVolume;
-		volumeSliders [1].value = AudioManager.instance.musicVolume;
-		volumeSliders [2].value = AudioManager.instance.sfxVolume;
+		volumeSliders[0].value = AudioManager.instance.masterVolume;
+		volumeSliders[1].value = AudioManager.instance.musicVolume;
+		volumeSliders[2].value = AudioManager.instance.sfxVolume;
 
 		for (int i = 0; i < resolutionToggles.Length; i++) {
-			resolutionToggles [i].isOn = i == resolutionIndex;
+			resolutionToggles[i].isOn = i == resolutionIndex;
 		}
 
 		fullscreenToggle.isOn = isFullscreen;
 	}
 
-	public void Play() {
+	public void Play () {
 		SceneManager.LoadScene ("LevelSelect");
 	}
 
-	public void MainMenu() {
+	public void MainMenu () {
 		mainMenuHolder.SetActive (true);
 		optionsMenuHolder.SetActive (false);
 	}
 
-	public void OptionsMenu() {
+	public void OptionsMenu () {
 		mainMenuHolder.SetActive (false);
 		optionsMenuHolder.SetActive (true);
 	}
 
-	public void SetMasterVolume(float volume) {
+	public void SetMasterVolume (float volume) {
 		AudioManager.instance.SetVolume (volume, AudioManager.AudioChannel.Master);
 	}
 
-	public void SetMusicVolume(float volume) {
+	public void SetMusicVolume (float volume) {
 		AudioManager.instance.SetVolume (volume, AudioManager.AudioChannel.Music);
 	}
 
-	public void SetSfxVolume(float volume) {
+	public void SetSfxVolume (float volume) {
 		AudioManager.instance.SetVolume (volume, AudioManager.AudioChannel.SFX);
 	}
 
-	public void SetScreenResolution(int i) {
-		if (resolutionToggles [i].isOn) {
+	public void SetScreenResolution (int i) {
+		if (resolutionToggles[i].isOn) {
 			resolutionIndex = i;
 			float aspectRatio = 16 / 9f;
-			Screen.SetResolution(screenWidths[i], (int)(screenWidths[i]/aspectRatio), false);
+			Screen.SetResolution (screenWidths[i], (int) (screenWidths[i] / aspectRatio), false);
 			PlayerPrefs.SetInt ("Resolution index", resolutionIndex);
 			PlayerPrefs.Save ();
 		}
 	}
 
-	public void SetFullscreen(bool isFullscreen) {
+	public void SetFullscreen (bool isFullscreen) {
 		for (int i = 0; i < resolutionToggles.Length; i++) {
-			resolutionToggles [i].interactable = !isFullscreen;
+			resolutionToggles[i].interactable = !isFullscreen;
 		}
 
 		if (isFullscreen) {
 			Resolution[] allResolutions = Screen.resolutions;
-			Resolution maxResolution = allResolutions [allResolutions.Length - 1];
+			Resolution maxResolution = allResolutions[allResolutions.Length - 1];
 			Screen.SetResolution (maxResolution.width, maxResolution.height, true);
 		} else {
 			SetScreenResolution (resolutionIndex);
@@ -106,7 +106,7 @@ public class Menu : MonoBehaviour {
 		PlayerPrefs.Save ();
 	}
 
-	public void Quit() {
+	public void Quit () {
 		Application.Quit ();
 	}
 }

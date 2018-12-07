@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class MusicManager : MonoBehaviour {
 
@@ -12,8 +12,8 @@ public class MusicManager : MonoBehaviour {
 		SceneManager.sceneLoaded += SceneLoaded;
 		SceneLoaded (SceneManager.GetActiveScene (), LoadSceneMode.Additive);
 	}
-	
-	void SceneLoaded(Scene scene, LoadSceneMode m) {
+
+	void SceneLoaded (Scene scene, LoadSceneMode m) {
 		string newSceneName = scene.name;
 		if (newSceneName != sceneName) {
 			sceneName = newSceneName;
@@ -21,19 +21,19 @@ public class MusicManager : MonoBehaviour {
 		}
 	}
 
-	void PlayMusic() {
+	void PlayMusic () {
 		AudioClip clipToPlay = null;
 
 		switch (sceneName) {
-		case "Menu":
-			clipToPlay = menuTheme;
-			break;
-		case "Game":
-			clipToPlay = mainTheme;
-			break;
-		default:
-			clipToPlay = weirdTheme;
-			break;
+			case "Menu":
+				clipToPlay = menuTheme;
+				break;
+			case "Game":
+				clipToPlay = mainTheme;
+				break;
+			default:
+				clipToPlay = weirdTheme;
+				break;
 		}
 		if (clipToPlay != null) {
 			AudioManager.instance.PlayMusic (clipToPlay, 2);

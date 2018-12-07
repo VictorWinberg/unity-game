@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour {
 
@@ -17,17 +17,17 @@ public class GameUI : MonoBehaviour {
 	Player p1, p2;
 
 	void Start () {
-		manager = FindObjectOfType<GameManager>();
-		spawner = FindObjectOfType<Spawner>();
+		manager = FindObjectOfType<GameManager> ();
+		spawner = FindObjectOfType<Spawner> ();
 		spawner.OnNewWave += OnNewWave;
-		p1 = manager.getPlayer1();
-		p2 = manager.getPlayer2();
+		p1 = manager.getPlayer1 ();
+		p2 = manager.getPlayer2 ();
 		p1.OnDeath += OnGameOver;
 		p2.OnDeath += OnGameOver;
 	}
 
-	void Update() {
-		scoreUI.text = Scoreboard.score.ToString("D6");
+	void Update () {
+		scoreUI.text = Scoreboard.score.ToString ("D6");
 		float healthPercent = 0;
 		if (p1 != null && p2 != null) {
 			healthPercent = (p1.health + p2.health) / (p1.startingHealth + p2.startingHealth);
@@ -36,9 +36,9 @@ public class GameUI : MonoBehaviour {
 		healthbar.localScale = new Vector3 (healthPercent, 1, 1);
 	}
 
-	void OnNewWave(int waveNumber) {
+	void OnNewWave (int waveNumber) {
 		waveTitle.text = "- Wave " + HumanFriendlyInteger.IntegerToWritten (waveNumber) + " -";
-		string enemyCount = (spawner.waves [waveNumber - 1].infinite) ? "Infinite" : spawner.waves [waveNumber - 1].enemyCount + "";
+		string enemyCount = (spawner.waves[waveNumber - 1].infinite) ? "Infinite" : spawner.waves[waveNumber - 1].enemyCount + "";
 		//enemyCount += " | Health: " + (int)(manager.getPlayer ().getHealth ()) + " | Mode: " + manager.getPlayer ().getGun ().fireMode;
 		waveEnemyCount.text = "Enemies: " + enemyCount;
 		StopCoroutine ("AnimateWaveBanner");
@@ -56,44 +56,44 @@ public class GameUI : MonoBehaviour {
 		while (animatePercent >= 0) {
 			animatePercent += Time.deltaTime * speed * dir;
 
-			if(animatePercent >= 1) {
+			if (animatePercent >= 1) {
 				animatePercent = 1;
-				if(Time.time > endDelayTime) {
+				if (Time.time > endDelayTime) {
 					dir = -1;
 				}
 			}
 
-			waveBanner.anchoredPosition = Vector2.up * Mathf.Lerp(-150, 150, animatePercent);
+			waveBanner.anchoredPosition = Vector2.up * Mathf.Lerp (-150, 150, animatePercent);
 			yield return null;
 		}
 	}
 
 	void OnGameOver () {
 		Cursor.visible = true;
-		StartCoroutine(Fade(Color.clear, new Color(1, 1, 1, .8f), 1));
+		StartCoroutine (Fade (Color.clear, new Color (1, 1, 1, .8f), 1));
 		gameOverScore.text = scoreUI.text;
 		scoreUI.gameObject.SetActive (false);
 		healthbar.transform.parent.gameObject.SetActive (false);
 		gameOverUI.SetActive (true);
 	}
 
-	IEnumerator Fade(Color from, Color to, float time) {
+	IEnumerator Fade (Color from, Color to, float time) {
 		float speed = 1 / time;
 		float percent = 0;
 
 		while (percent < 1) {
 			percent += Time.deltaTime * speed;
-			fadeCanvas.color = Color.Lerp(from, to, percent);
+			fadeCanvas.color = Color.Lerp (from, to, percent);
 			yield return null;
 		}
 	}
 
 	// UI Input
-	public void StartNewGame() {
+	public void StartNewGame () {
 		SceneManager.LoadScene ("Game");
 	}
 
-	public void ReturnToMainMenu() {
+	public void ReturnToMainMenu () {
 		SceneManager.LoadScene ("Menu");
 	}
 }

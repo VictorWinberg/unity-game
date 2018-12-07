@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Scoreboard : MonoBehaviour {
 
@@ -9,12 +9,12 @@ public class Scoreboard : MonoBehaviour {
 	float killStreakExpiry = 1f;
 
 	// Use this for initialization
-	void Start() {
+	void Start () {
 		Enemy.OnDeathStatic += OnEnemyKilled;
 		FindObjectOfType<Player> ().OnDeath += OnPlayerDeath;
 	}
 
-	void OnEnemyKilled() {
+	void OnEnemyKilled () {
 		if (Time.time < lastKillTime + killStreakExpiry) {
 			killStreak++;
 		} else {
@@ -26,7 +26,7 @@ public class Scoreboard : MonoBehaviour {
 		score += 5 + 2 * killStreak;
 	}
 
-	void OnPlayerDeath() {
+	void OnPlayerDeath () {
 		Enemy.OnDeathStatic -= OnEnemyKilled;
 	}
 }

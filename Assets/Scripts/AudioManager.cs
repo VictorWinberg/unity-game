@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 [RequireComponent (typeof (SoundLibrary))]
 public class AudioManager : MonoBehaviour {
 
-	public enum AudioChannel {Master, SFX, Music};
+	public enum AudioChannel { Master, SFX, Music };
 
 	public float masterVolume { get; private set; }
 	public float sfxVolume { get; private set; }
@@ -20,7 +20,7 @@ public class AudioManager : MonoBehaviour {
 
 	public static AudioManager instance;
 
-	void Awake() {
+	void Awake () {
 		if (instance != null) {
 			Destroy (gameObject);
 			return;
@@ -34,7 +34,7 @@ public class AudioManager : MonoBehaviour {
 		musicSources = new AudioSource[2];
 		for (int i = 0; i < musicSources.Length; i++) {
 			GameObject newMusicSource = new GameObject ("Music source " + (i + 1));
-			musicSources [i] = newMusicSource.AddComponent<AudioSource> ();
+			musicSources[i] = newMusicSource.AddComponent<AudioSource> ();
 			//musicSources [i].loop = true;
 			newMusicSource.transform.parent = transform;
 		}
@@ -48,30 +48,30 @@ public class AudioManager : MonoBehaviour {
 		sfxVolume = PlayerPrefs.GetFloat ("SFXVolume", 1);
 	}
 
-	public void SetPlayer(GameObject player) {
+	public void SetPlayer (GameObject player) {
 		this.player = player;
 	}
 
-	void Update() {
+	void Update () {
 		if (player != null) {
 			listener.transform.position = player.transform.position;
 		}
 	}
 
-	public void SetVolume(float volume, AudioChannel channel) {
+	public void SetVolume (float volume, AudioChannel channel) {
 		switch (channel) {
-		case AudioChannel.Master:
-			masterVolume = volume;
-			break;
-		case AudioChannel.Music:
-			musicVolume = volume;
-			break;
-		case AudioChannel.SFX:
-			sfxVolume = volume;
-			break;
+			case AudioChannel.Master:
+				masterVolume = volume;
+				break;
+			case AudioChannel.Music:
+				musicVolume = volume;
+				break;
+			case AudioChannel.SFX:
+				sfxVolume = volume;
+				break;
 		}
 
-		musicSources [0].volume = musicVolume * masterVolume;
+		musicSources[0].volume = musicVolume * masterVolume;
 		//musicSources [1].volume = musicVolume * masterVolume;
 
 		PlayerPrefs.SetFloat ("MasterVolume", masterVolume);
@@ -80,34 +80,34 @@ public class AudioManager : MonoBehaviour {
 		PlayerPrefs.Save ();
 	}
 
-	public void PlayMusic(AudioClip clip, float fadeDuration = 1) {
+	public void PlayMusic (AudioClip clip, float fadeDuration = 1) {
 		musicSourceIndex = 1 - musicSourceIndex;
-		musicSources [musicSourceIndex].clip = clip;
-		musicSources [musicSourceIndex].Play ();
+		musicSources[musicSourceIndex].clip = clip;
+		musicSources[musicSourceIndex].Play ();
 
-		StartCoroutine (AnimateMusicCrossfade(fadeDuration));
+		StartCoroutine (AnimateMusicCrossfade (fadeDuration));
 	}
 
-	public void PlaySound(AudioClip clip, Vector3 pos) {
-		if(clip != null)
+	public void PlaySound (AudioClip clip, Vector3 pos) {
+		if (clip != null)
 			AudioSource.PlayClipAtPoint (clip, pos, sfxVolume * masterVolume);
 	}
 
-	public void PlaySound(string title, Vector3 pos) {
+	public void PlaySound (string title, Vector3 pos) {
 		PlaySound (soundLibrary.getClipFromTitle (title), pos);
 	}
 
-	public void PlaySound(string title) {
+	public void PlaySound (string title) {
 		sfxSource2D.PlayOneShot (soundLibrary.getClipFromTitle (title), sfxVolume * masterVolume);
 	}
 
-	IEnumerator AnimateMusicCrossfade(float duration) {
+	IEnumerator AnimateMusicCrossfade (float duration) {
 		float percent = 0;
 
 		while (percent < 1) {
 			percent += Time.deltaTime * 1 / duration;
-			musicSources [musicSourceIndex].volume = Mathf.Lerp (0, musicVolume * masterVolume, percent);
-			musicSources [1 - musicSourceIndex].volume = Mathf.Lerp (musicVolume * masterVolume, 0, percent);
+			musicSources[musicSourceIndex].volume = Mathf.Lerp (0, musicVolume * masterVolume, percent);
+			musicSources[1 - musicSourceIndex].volume = Mathf.Lerp (musicVolume * masterVolume, 0, percent);
 			yield return null;
 		}
 	}

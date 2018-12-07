@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class SoundLibrary : MonoBehaviour {
 
@@ -8,16 +8,16 @@ public class SoundLibrary : MonoBehaviour {
 
 	Dictionary<string, AudioClip[]> groupDictionary = new Dictionary<string, AudioClip[]> ();
 
-	void Awake() {
+	void Awake () {
 		foreach (SoundGroup soundGroup in soundGroups) {
 			groupDictionary.Add (soundGroup.groupID, soundGroup.group);
 		}
 	}
 
-	public AudioClip getClipFromTitle(string title) {
+	public AudioClip getClipFromTitle (string title) {
 		if (groupDictionary.ContainsKey (title)) {
-			AudioClip[] sounds = groupDictionary [title];
-			return sounds [Random.Range (0, sounds.Length)];
+			AudioClip[] sounds = groupDictionary[title];
+			return sounds[Random.Range (0, sounds.Length)];
 		}
 		return null;
 	}

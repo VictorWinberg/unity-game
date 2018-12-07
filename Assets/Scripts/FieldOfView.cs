@@ -1,18 +1,18 @@
-﻿using UnityEngine;
-using UnityEngine.AI;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
 
 public class FieldOfView : MonoBehaviour {
 
 	public float viewRadius;
-	[Range(0, 360)]
+	[Range (0, 360)]
 	public float viewAngle;
 
 	public LayerMask targetMask, obstacleMask;
 
 	[HideInInspector]
-	public List<Transform> visibleTargets = new List<Transform>();
+	public List<Transform> visibleTargets = new List<Transform> ();
 
 	public float meshResolution, edgeDistanceThreshold;
 	public int edgeResolveIterations;
@@ -22,7 +22,7 @@ public class FieldOfView : MonoBehaviour {
 	public MeshFilter viewMeshFilter;
 	Mesh viewMesh;
 
-	void Start() {
+	void Start () {
 		viewMesh = new Mesh ();
 		viewMesh.name = "View Mesh";
 		viewMeshFilter.mesh = viewMesh;
@@ -30,31 +30,31 @@ public class FieldOfView : MonoBehaviour {
 		StartCoroutine ("FindTargetsWithDelay", .2f);
 	}
 
-	IEnumerator FindTargetsWithDelay(float delay) {
+	IEnumerator FindTargetsWithDelay (float delay) {
 		while (true) {
 			yield return new WaitForSeconds (delay);
 			FindVisibleTargets ();
 		}
 	}
 
-	void LateUpdate() {
+	void LateUpdate () {
 		DrawFieldOfView ();
 	}
 
-	void FindVisibleTargets() {
+	void FindVisibleTargets () {
 		HideTargets (visibleTargets);
 		visibleTargets.Clear ();
 		Collider[] targetsInViewRadius = Physics.OverlapSphere (transform.position, viewRadius, targetMask);
 
 		for (int i = 0; i < targetsInViewRadius.Length; i++) {
-			Transform target = targetsInViewRadius [i].transform;
+			Transform target = targetsInViewRadius[i].transform;
 			Vector3 directionToTarget = (target.position - transform.position).normalized;
 
 			if (Vector3.Angle (transform.forward, directionToTarget) < viewAngle / 2) {
 				float distanceToTarget = Vector3.Distance (transform.position, target.position);
 
-				Vector3 directionToTargetWithMargin = (target.position + target.GetComponent<NavMeshAgent>().desiredVelocity.normalized * 1.5f - transform.position).normalized;
-				if(!Physics.Raycast(transform.position, directionToTargetWithMargin, distanceToTarget, obstacleMask) || !Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstacleMask)) {
+				Vector3 directionToTargetWithMargin = (target.position + target.GetComponent<NavMeshAgent> ().desiredVelocity.normalized * 1.5f - transform.position).normalized;
+				if (!Physics.Raycast (transform.position, directionToTargetWithMargin, distanceToTarget, obstacleMask) || !Physics.Raycast (transform.position, directionToTarget, distanceToTarget, obstacleMask)) {
 					visibleTargets.Add (target);
 					target.GetComponent<Renderer> ().enabled = true;
 				}
@@ -64,13 +64,13 @@ public class FieldOfView : MonoBehaviour {
 
 	void HideTargets (List<Transform> targets) {
 		foreach (Transform target in targets) {
-			if(target != null)
+			if (target != null)
 				target.GetComponent<Renderer> ().enabled = false;
 		}
 	}
 
-	void DrawFieldOfView() {
-		int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
+	void DrawFieldOfView () {
+		int stepCount = Mathf.RoundToInt (viewAngle * meshResolution);
 		float stepAngleSize = viewAngle / stepCount;
 		List<Vector3> viewPoints = new List<Vector3> ();
 		ViewCastInfo oldViewCast = new ViewCastInfo ();
@@ -92,23 +92,22 @@ public class FieldOfView : MonoBehaviour {
 
 			}
 
-
 			viewPoints.Add (newViewCast.point);
 			oldViewCast = newViewCast;
 		}
 
 		int vertexCount = viewPoints.Count + 1;
 		Vector3[] vertices = new Vector3[vertexCount];
-		int[] triangles = new int[(vertexCount-2) * 3];
+		int[] triangles = new int[(vertexCount - 2) * 3];
 
-		vertices [0] = Vector3.zero;
+		vertices[0] = Vector3.zero;
 		for (int i = 0; i < vertexCount - 1; i++) {
-			vertices [i + 1] = transform.InverseTransformPoint(viewPoints [i]) + Vector3.forward * maskCutawayDistance;
+			vertices[i + 1] = transform.InverseTransformPoint (viewPoints[i]) + Vector3.forward * maskCutawayDistance;
 
 			if (i < vertexCount - 2) {
-				triangles [i * 3] = 0;
-				triangles [i * 3 + 1] = i + 1;
-				triangles [i * 3 + 2] = i + 2;
+				triangles[i * 3] = 0;
+				triangles[i * 3 + 1] = i + 1;
+				triangles[i * 3 + 2] = i + 2;
 			}
 		}
 
@@ -119,14 +118,14 @@ public class FieldOfView : MonoBehaviour {
 		viewMesh.RecalculateNormals ();
 	}
 
-	public Vector3 DirectionFromAngle(float angleInDegrees, bool globalAngle) {
+	public Vector3 DirectionFromAngle (float angleInDegrees, bool globalAngle) {
 		if (!globalAngle) {
 			angleInDegrees += transform.eulerAngles.y;
 		}
 		return new Vector3 (Mathf.Sin (angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos (angleInDegrees * Mathf.Deg2Rad));
 	}
 
-	ViewCastInfo ViewCast(float globalAngle) {
+	ViewCastInfo ViewCast (float globalAngle) {
 		Vector3 direction = DirectionFromAngle (globalAngle, true);
 		RaycastHit hit;
 
@@ -137,7 +136,7 @@ public class FieldOfView : MonoBehaviour {
 		}
 	}
 
-	EdgeInfo FindEdge(ViewCastInfo minViewCast, ViewCastInfo maxViewCast) {
+	EdgeInfo FindEdge (ViewCastInfo minViewCast, ViewCastInfo maxViewCast) {
 		float minAngle = minViewCast.angle;
 		float maxAngle = maxViewCast.angle;
 		Vector3 minPoint = Vector3.zero;
@@ -165,7 +164,7 @@ public class FieldOfView : MonoBehaviour {
 		public Vector3 point;
 		public float distance, angle;
 
-		public ViewCastInfo(bool hit, Vector3 point, float distance, float angle) {
+		public ViewCastInfo (bool hit, Vector3 point, float distance, float angle) {
 			this.hit = hit;
 			this.point = point;
 			this.distance = distance;
@@ -177,7 +176,7 @@ public class FieldOfView : MonoBehaviour {
 		public Vector3 pointA;
 		public Vector3 pointB;
 
-		public EdgeInfo(Vector3 pointA, Vector3 pointB) {
+		public EdgeInfo (Vector3 pointA, Vector3 pointB) {
 			this.pointA = pointA;
 			this.pointB = pointB;
 		}

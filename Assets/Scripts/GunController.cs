@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 public class GunController : MonoBehaviour {
 
@@ -8,26 +8,26 @@ public class GunController : MonoBehaviour {
 	private Gun gun;
 	private int gunIndex;
 
-	public void EquipGun(Gun gunToEquip) {
+	public void EquipGun (Gun gunToEquip) {
 		if (gun != null) {
-			Destroy(gun.gameObject);
+			Destroy (gun.gameObject);
 		}
-		gun = (Gun)Instantiate (gunToEquip, weaponHold.position, weaponHold.rotation);
+		gun = (Gun) Instantiate (gunToEquip, weaponHold.position, weaponHold.rotation);
 		gun.transform.parent = weaponHold;
 	}
 
-	public void EquipGun(int gunIndex) {
+	public void EquipGun (int gunIndex) {
 		this.gunIndex = gunIndex;
-		EquipGun (guns [gunIndex % guns.Length]);
+		EquipGun (guns[gunIndex % guns.Length]);
 	}
 
-	public void OnTriggerHold (){
+	public void OnTriggerHold () {
 		if (gun != null) {
 			gun.OnTriggerHold ();
 		}
 	}
 
-	public void OnTriggerRelease() {
+	public void OnTriggerRelease () {
 		if (gun != null) {
 			gun.OnTriggerRelease ();
 		}
@@ -39,17 +39,17 @@ public class GunController : MonoBehaviour {
 		}
 	}
 
-	public void Reload() {
+	public void Reload () {
 		if (gun != null) {
 			gun.Reload ();
 		}
 	}
 
-	public Gun getGun() {
+	public Gun getGun () {
 		return guns[gunIndex % guns.Length];
 	}
 
-	public Gun getGunWithIndex(int gunIndex) {
+	public Gun getGunWithIndex (int gunIndex) {
 		return guns[gunIndex % guns.Length];
 	}
 }
