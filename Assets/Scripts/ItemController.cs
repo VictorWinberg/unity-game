@@ -62,8 +62,12 @@ public class ItemController : MonoBehaviour {
     }
 
     void DropInto (GameObject container) {
+        if (item.GetComponent<Item> () == null) {
+            Drop ();
+            return;
+        }
         item.transform.parent = null;
-        container.GetComponent<IInteractable> ().Interact (item);
+        container.GetComponent<IInteractable> ().Interact (item.GetComponent<Item> ());
         Rigidbody body = item.GetComponent<Rigidbody> ();
         body.isKinematic = false;
         body.detectCollisions = true;

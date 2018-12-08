@@ -2,5 +2,5 @@
 
 public interface IInteractable {
 
-	void Interact (GameObject item);
+	void Interact (Item item);
 }

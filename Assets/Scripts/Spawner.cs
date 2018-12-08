@@ -117,8 +117,11 @@ public class Spawner : MonoBehaviour {
 		// spawnedEnemy.OnDeath += OnEnemyDeath;
 
 		// spawnedEnemy.SetCharacteristics (currentWave.moveSpeed, currentWave.damage, currentWave.health, currentWave.skinColor);
+		string resource;
+		if (Random.Range (0, 1f) > 0.5f) resource = "Water";
+		else resource = "Citrus";
 
-		Instantiate ((GameObject) Resources.Load ("Item"), spawnTile.position + Vector3.up, Quaternion.identity);
+		Instantiate ((GameObject) Resources.Load (resource), spawnTile.position + Vector3.up, Quaternion.identity);
 	}
 
 	void OnPlayerDeath () {

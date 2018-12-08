@@ -19,12 +19,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4000436626904142}
+  - component: {fileID: 114141676655860666}
   - component: {fileID: 33835963094275078}
   - component: {fileID: 23237699728660456}
   - component: {fileID: 65265767429164400}
   - component: {fileID: 54049257312806478}
   m_Layer: 13
-  m_Name: Item
+  m_Name: Citrus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,3 +113,15 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114141676655860666
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1625514687163740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef55e272f0744314b402bd3ff3e0ce7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 1
