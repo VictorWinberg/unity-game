@@ -24,7 +24,22 @@ public class ItemController : MonoBehaviour {
                 PickUp (item);
             }
         } else {
-            Drop ();
+            float maxDist = 2f;
+            float minDist = Mathf.Infinity;
+            GameObject container = null;
+            foreach (Collider hit in Physics.OverlapSphere (transform.position, maxDist)) {
+                float dist = Vector3.Distance (hit.transform.position, transform.position);
+                float dot = Vector3.Dot (transform.forward, (hit.transform.position - transform.position).normalized);
+                if (dist < minDist && dot > 0.5f && hit.gameObject.tag == "Interactable") {
+                    minDist = dist * dot;
+                    container = hit.gameObject;
+                }
+            }
+            if (container == null) {
+                Drop ();
+            } else {
+                DropInto (container);
+            }
         }
     }
 
@@ -40,6 +55,15 @@ public class ItemController : MonoBehaviour {
 
     void Drop () {
         item.transform.parent = null;
+        Rigidbody body = item.GetComponent<Rigidbody> ();
+        body.isKinematic = false;
+        body.detectCollisions = true;
+        item = null;
+    }
+
+    void DropInto (GameObject container) {
+        item.transform.parent = null;
+        container.GetComponent<IInteractable> ().Interact (item);
         Rigidbody body = item.GetComponent<Rigidbody> ();
         body.isKinematic = false;
         body.detectCollisions = true;
