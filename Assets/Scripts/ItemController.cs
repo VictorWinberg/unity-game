@@ -15,7 +15,7 @@ public class ItemController : MonoBehaviour {
             foreach (Collider hit in Physics.OverlapSphere (transform.position, maxDist, pickableLayer)) {
                 float dist = Vector3.Distance (hit.transform.position, transform.position);
                 float dot = Vector3.Dot (transform.forward, (hit.transform.position - transform.position).normalized);
-                if (dist < minDist && dot > 0.5f) {
+                if (dist < minDist && dot > 0.5f && hit.GetComponent<Rigidbody> () != null) {
                     minDist = dist * dot;
                     item = hit.gameObject;
                 }
