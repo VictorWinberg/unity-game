@@ -6,7 +6,7 @@ public class ItemController : MonoBehaviour {
     public Transform itemHold;
     private GameObject item;
 
-    public void Interact () {
+    public void Move () {
         if (this.item == null) {
             int pickableLayer = 1 << LayerMask.NameToLayer ("Pickable");
             float maxDist = 2f;
@@ -43,6 +43,10 @@ public class ItemController : MonoBehaviour {
         }
     }
 
+    public void Interact () {
+
+    }
+
     void PickUp (GameObject item) {
         item.transform.position = itemHold.position;
         item.transform.parent = transform;
@@ -66,10 +70,11 @@ public class ItemController : MonoBehaviour {
             return;
         }
         item.transform.parent = null;
-        container.GetComponent<IInteractable> ().Interact (item.GetComponent<Item> ());
-        Rigidbody body = item.GetComponent<Rigidbody> ();
-        body.isKinematic = false;
-        body.detectCollisions = true;
+        if (container.GetComponent<IContainable> ().Place (item.GetComponent<Item> ())) {
+            Rigidbody body = item.GetComponent<Rigidbody> ();
+            body.isKinematic = false;
+            body.detectCollisions = true;
+        }
         item = null;
     }
 }

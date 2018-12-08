@@ -37,8 +37,8 @@ public class Player : LivingEntity {
 		if (Input.GetButtonDown (fire1)) {
 			itemController.Interact ();
 		}
-		if (Input.GetButtonUp (fire1)) {
-			// gunController.OnTriggerRelease ();
+		if (Input.GetButtonDown (fire2)) {
+			itemController.Move ();
 		}
 		if (Input.GetButtonDown (fire2)) {
 			// gunController.Reload ();

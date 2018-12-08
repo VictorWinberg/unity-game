@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ContainerController : MonoBehaviour, IInteractable {
+public class ContainerController : MonoBehaviour, IContainable {
 
 	public Transform level;
 	private List<Item> items;
@@ -11,14 +11,14 @@ public class ContainerController : MonoBehaviour, IInteractable {
 		items = new List<Item> ();
 	}
 
-	public virtual void Interact (Item item) {
+	public virtual bool Place (Item item) {
 		items.Add (item);
 		if (item.state == Item.State.Liquid) {
 			Fill (item);
 		} else if (item.state == Item.State.Solid) {
-			Place (item);
+			Put (item);
 		}
-
+		return true;
 	}
 
 	void Fill (Item item) {
@@ -30,7 +30,7 @@ public class ContainerController : MonoBehaviour, IInteractable {
 		Destroy (item.gameObject);
 	}
 
-	void Place (Item item) {
+	void Put (Item item) {
 		item.transform.parent = transform;
 		Destroy (item.GetComponent<Rigidbody> ());
 	}
