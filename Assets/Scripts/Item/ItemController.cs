@@ -45,7 +45,6 @@ public class ItemController : MonoBehaviour {
 
     void PickUp (GameObject item) {
         item.transform.position = itemHold.position;
-        item.transform.rotation = itemHold.rotation;
         item.transform.parent = transform;
         Rigidbody body = item.GetComponent<Rigidbody> ();
         body.isKinematic = true;
