@@ -21,6 +21,8 @@ public class ContainerController : MonoBehaviour, IContainable {
 		return true;
 	}
 
+	public virtual void Remove () { }
+
 	void Fill (Item item) {
 		Material itemMaterial = new Material (item.GetComponent<Renderer> ().sharedMaterial);
 		level.GetComponent<Renderer> ().sharedMaterial = itemMaterial;

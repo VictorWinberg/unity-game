@@ -15,7 +15,7 @@ public class ItemController : MonoBehaviour {
             foreach (Collider hit in Physics.OverlapSphere (transform.position, maxDist, pickableLayer)) {
                 float dist = Vector3.Distance (hit.transform.position, transform.position);
                 float dot = Vector3.Dot (transform.forward, (hit.transform.position - transform.position).normalized);
-                if (dist < minDist && dot > 0.5f && hit.GetComponent<Rigidbody> () != null) {
+                if (dist < minDist && dot > 0.5f) {
                     minDist = dist * dot;
                     item = hit.gameObject;
                 }
@@ -44,10 +44,25 @@ public class ItemController : MonoBehaviour {
     }
 
     public void Interact () {
-
+        float maxDist = 2f;
+        float minDist = Mathf.Infinity;
+        GameObject item = null;
+        foreach (Collider hit in Physics.OverlapSphere (transform.position, maxDist)) {
+            float dist = Vector3.Distance (hit.transform.position, transform.position);
+            float dot = Vector3.Dot (transform.forward, (hit.transform.position - transform.position).normalized);
+            if (dist < minDist && dot > 0.5f && hit.gameObject.tag == "Interactable") {
+                minDist = dist * dot;
+                item = hit.gameObject;
+            }
+        }
+        if (item != null) {
+            item.GetComponent<IInteractable> ().Interact ();
+        }
     }
 
     void PickUp (GameObject item) {
+        if (item.transform.parent != null)
+            item.transform.parent.GetComponent<IContainable> ().Remove ();
         item.transform.position = itemHold.position;
         item.transform.parent = transform;
         Rigidbody body = item.GetComponent<Rigidbody> ();
@@ -69,12 +84,11 @@ public class ItemController : MonoBehaviour {
             Drop ();
             return;
         }
-        item.transform.parent = null;
         if (container.GetComponent<IContainable> ().Place (item.GetComponent<Item> ())) {
             Rigidbody body = item.GetComponent<Rigidbody> ();
             body.isKinematic = false;
             body.detectCollisions = true;
+            item = null;
         }
-        item = null;
     }
 }

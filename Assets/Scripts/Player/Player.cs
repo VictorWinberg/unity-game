@@ -35,10 +35,10 @@ public class Player : LivingEntity {
 
 		// Interaction input
 		if (Input.GetButtonDown (fire1)) {
-			itemController.Interact ();
+			itemController.Move ();
 		}
 		if (Input.GetButtonDown (fire2)) {
-			itemController.Move ();
+			itemController.Interact ();
 		}
 		if (Input.GetButtonDown (fire2)) {
 			// gunController.Reload ();

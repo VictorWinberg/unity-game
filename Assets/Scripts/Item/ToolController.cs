@@ -8,15 +8,20 @@ public class ToolController : MonoBehaviour, IInteractable, IContainable {
 
     public virtual bool Place (Item item) {
         if (this.item != null) return false;
+
         item.transform.parent = transform;
-        Destroy (item.GetComponent<Rigidbody> ());
         this.item = item;
         return true;
     }
 
+    public virtual void Remove () {
+        item = null;
+    }
+
     public virtual void Interact () {
+        if (item == null) return;
+
         item.ready = true;
-        item.gameObject.AddComponent<Rigidbody> ();
         this.item = null;
     }
 }
