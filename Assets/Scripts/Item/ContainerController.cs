@@ -12,6 +12,8 @@ public class ContainerController : MonoBehaviour, IContainable {
 	}
 
 	public virtual bool Place (Item item) {
+		if (!item.ready) return false;
+
 		items.Add (item);
 		if (item.state == Item.State.Liquid) {
 			Fill (item);
@@ -34,6 +36,7 @@ public class ContainerController : MonoBehaviour, IContainable {
 
 	void Put (Item item) {
 		item.transform.parent = transform;
+		item.gameObject.layer = 0;
 		Destroy (item.GetComponent<Rigidbody> ());
 	}
 }
