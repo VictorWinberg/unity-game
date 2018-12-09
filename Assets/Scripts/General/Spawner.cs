@@ -81,12 +81,12 @@ public class Spawner : MonoBehaviour {
 			enemiesRemainingToSpawn--;
 			nextSpawnTime = Time.time + currentWave.timeBetweenSpawns;
 
-			StartCoroutine ("SpawnEnemy");
+			// StartCoroutine ("SpawnEnemy");
 		}
 
 		if (developerMode) {
 			if (Input.GetKeyDown (KeyCode.Return)) {
-				StopCoroutine ("SpawnEnemy");
+				// StopCoroutine ("SpawnEnemy");
 				foreach (Enemy enemy in FindObjectsOfType<Enemy> ()) {
 					GameObject.Destroy (enemy.gameObject);
 				}
@@ -119,7 +119,7 @@ public class Spawner : MonoBehaviour {
 		// spawnedEnemy.SetCharacteristics (currentWave.moveSpeed, currentWave.damage, currentWave.health, currentWave.skinColor);
 		string resource;
 		if (Random.Range (0, 1f) > 0.5f) resource = "Water";
-		else resource = "Citrus";
+		else resource = "Lime";
 
 		Instantiate ((GameObject) Resources.Load (resource), spawnTile.position + Vector3.up, Quaternion.identity);
 	}
