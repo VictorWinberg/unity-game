@@ -6,14 +6,14 @@ public class Spawner : MonoBehaviour {
 	public bool developerMode;
 
 	public Wave[] waves { get; private set; }
-	public Enemy enemy;
+	public Customer customer;
 
 	LivingEntity player;
 
 	Wave currentWave;
 	int currentWaveNumber;
 
-	int enemiesRemainingToSpawn, enemiesRemainingAlive;
+	int customersRemainingToSpawn, customersRemainingAlive;
 	float nextSpawnTime;
 
 	MapGenerator map;
@@ -31,12 +31,12 @@ public class Spawner : MonoBehaviour {
 	public static Spawner Create () {
 		GameObject go = new GameObject ("Spawner");
 		Spawner spawner = go.AddComponent<Spawner> ();
-		spawner.enemy = ((GameObject) Resources.Load ("Enemy")).GetComponent<Enemy> ();
+		spawner.customer = ((GameObject) Resources.Load ("Customer")).GetComponent<Customer> ();
 		spawner.developerMode = true;
 		Wave[] myWaves = new Wave[GameManager.waves];
 		for (int i = 0; i < myWaves.Length; i++) {
 			myWaves[i] = new Wave ();
-			myWaves[i].enemyCount = (int) Random.Range (3 * (i + 1), 5 * (i + 1));
+			myWaves[i].customerCount = (int) Random.Range (3 * (i + 1), 5 * (i + 1));
 			myWaves[i].timeBetweenSpawns = Random.Range (.2f, 1f);
 
 			myWaves[i].moveSpeed = 2f + 0.2f * i;
@@ -77,25 +77,25 @@ public class Spawner : MonoBehaviour {
 			idlePositionPrevious = player.transform.position;
 		}
 
-		if ((enemiesRemainingToSpawn > 0 || currentWave.infinite) && Time.time > nextSpawnTime) {
-			enemiesRemainingToSpawn--;
+		if ((customersRemainingToSpawn > 0 || currentWave.infinite) && Time.time > nextSpawnTime) {
+			customersRemainingToSpawn--;
 			nextSpawnTime = Time.time + currentWave.timeBetweenSpawns;
 
-			// StartCoroutine ("SpawnEnemy");
+			StartCoroutine ("SpawnCustomer");
 		}
 
 		if (developerMode) {
 			if (Input.GetKeyDown (KeyCode.Return)) {
-				// StopCoroutine ("SpawnEnemy");
-				foreach (Enemy enemy in FindObjectsOfType<Enemy> ()) {
-					GameObject.Destroy (enemy.gameObject);
+				StopCoroutine ("SpawnCustomer");
+				foreach (Customer customer in FindObjectsOfType<Customer> ()) {
+					GameObject.Destroy (customer.gameObject);
 				}
 				NextWave ();
 			}
 		}
 	}
 
-	IEnumerator SpawnEnemy () {
+	IEnumerator SpawnCustomer () {
 		float spawnDelay = 1;
 		float tileFlashSpeed = 4;
 
@@ -113,25 +113,20 @@ public class Spawner : MonoBehaviour {
 			yield return null;
 		}
 		tileMaterial.color = initialColor;
-		// Enemy spawnedEnemy = Instantiate (enemy, spawnTile.position + Vector3.up, Quaternion.identity) as Enemy;
-		// spawnedEnemy.OnDeath += OnEnemyDeath;
+		Customer spawnedCustomer = Instantiate (customer, spawnTile.position + Vector3.up, Quaternion.identity) as Customer;
+		spawnedCustomer.OnDeath += OnCustomerDeath;
 
-		// spawnedEnemy.SetCharacteristics (currentWave.moveSpeed, currentWave.damage, currentWave.health, currentWave.skinColor);
-		string resource;
-		if (Random.Range (0, 1f) > 0.5f) resource = "Water";
-		else resource = "Lime";
-
-		Instantiate ((GameObject) Resources.Load (resource), spawnTile.position + Vector3.up, Quaternion.identity);
+		spawnedCustomer.SetCharacteristics (currentWave.moveSpeed, currentWave.damage, currentWave.health, currentWave.skinColor);
 	}
 
 	void OnPlayerDeath () {
 		isDisabled = true;
 	}
 
-	void OnEnemyDeath () {
-		enemiesRemainingAlive--;
+	void OnCustomerDeath () {
+		customersRemainingAlive--;
 
-		if (enemiesRemainingAlive == 0) {
+		if (customersRemainingAlive == 0) {
 			NextWave ();
 		}
 	}
@@ -149,8 +144,8 @@ public class Spawner : MonoBehaviour {
 		if (currentWaveNumber - 1 < waves.Length) {
 			currentWave = waves[currentWaveNumber - 1];
 
-			enemiesRemainingToSpawn = currentWave.enemyCount;
-			enemiesRemainingAlive = enemiesRemainingToSpawn;
+			customersRemainingToSpawn = currentWave.customerCount;
+			customersRemainingAlive = customersRemainingToSpawn;
 
 			if (OnNewWave != null) OnNewWave (currentWaveNumber);
 			// ResetPlayerPosition ();
@@ -160,7 +155,7 @@ public class Spawner : MonoBehaviour {
 	[System.Serializable]
 	public class Wave {
 		public bool infinite;
-		public int enemyCount;
+		public int customerCount;
 		public float timeBetweenSpawns;
 
 		public float moveSpeed;

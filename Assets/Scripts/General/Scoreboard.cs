@@ -10,11 +10,11 @@ public class Scoreboard : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Enemy.OnDeathStatic += OnEnemyKilled;
+		Customer.OnDeathStatic += OnCustomerKilled;
 		FindObjectOfType<Player> ().OnDeath += OnPlayerDeath;
 	}
 
-	void OnEnemyKilled () {
+	void OnCustomerKilled () {
 		if (Time.time < lastKillTime + killStreakExpiry) {
 			killStreak++;
 		} else {
@@ -27,6 +27,6 @@ public class Scoreboard : MonoBehaviour {
 	}
 
 	void OnPlayerDeath () {
-		Enemy.OnDeathStatic -= OnEnemyKilled;
+		Customer.OnDeathStatic -= OnCustomerKilled;
 	}
 }

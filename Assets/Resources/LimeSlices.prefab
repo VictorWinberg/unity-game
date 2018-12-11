@@ -299,6 +299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef55e272f0744314b402bd3ff3e0ce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  name: Lime (Sliced)
   state: 1
   ready: 1
   next: {fileID: 114141676655860666, guid: b95b1d40b547e45e291eba0780a63044, type: 2}

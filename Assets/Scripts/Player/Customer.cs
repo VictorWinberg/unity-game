@@ -1,8 +1,10 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent (typeof (UnityEngine.AI.NavMeshAgent))]
-public class Enemy : LivingEntity {
+public class Customer : LivingEntity, IContainable, IInteractable {
 
 	public enum State { Idle, Chasing, Attacking }
 	State currentState;
@@ -69,7 +71,7 @@ public class Enemy : LivingEntity {
 			if (OnDeathStatic != null) {
 				OnDeathStatic ();
 			}
-			AudioManager.instance.PlaySound ("Enemy Death", transform.position);
+			AudioManager.instance.PlaySound ("Customer Death", transform.position);
 			Destroy (Instantiate (deathEffect.gameObject, hitPoint, Quaternion.FromToRotation (Vector3.forward, hitDirection)) as GameObject, deathEffect.startLifetime);
 		}
 		base.TakeHit (damage, hitPoint, hitDirection);
@@ -86,7 +88,7 @@ public class Enemy : LivingEntity {
 				float sqrDstToTarget = (target.position - transform.position).sqrMagnitude;
 				if (sqrDstToTarget < Mathf.Pow (attackDistanceThreshold + myCollisionRadius + targetCollisionRadius, 2)) {
 					nextAttackTime = Time.time + timeBetweenAttacks;
-					AudioManager.instance.PlaySound ("Enemy Attack", transform.position);
+					AudioManager.instance.PlaySound ("Customer Attack", transform.position);
 					StartCoroutine (Attack ());
 				}
 			}
@@ -143,5 +145,27 @@ public class Enemy : LivingEntity {
 			}
 			yield return new WaitForSeconds (refreshRate);
 		}
+	}
+
+	public virtual bool Place (GameObject gameObject) {
+		IContainable container = gameObject.GetComponent<IContainable> ();
+		if (container == null) return false;
+
+		IEnumerable<string> items = container.getItems ().Select (item => item.name).OrderBy (x => x);
+		IEnumerable<string> order = new List<string> { "Water" }.OrderBy (x => x);
+		if (items.SequenceEqual (order)) Debug.Log ("Thanks for the drink!");
+		else Debug.Log ("Wrong drink!");
+
+		TakeDamage (health);
+		Destroy (gameObject);
+
+		return true;
+	}
+
+	public virtual void Remove () { }
+	public virtual List<Item> getItems () { return null; }
+
+	public virtual void Interact () {
+		Debug.Log ("I want a drink!");
 	}
 }

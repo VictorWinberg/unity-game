@@ -9,7 +9,7 @@ public class GameUI : MonoBehaviour {
 	public GameObject gameOverUI;
 
 	public RectTransform waveBanner, healthbar;
-	public Text waveTitle, waveEnemyCount, scoreUI, gameOverScore, healthbarHp;
+	public Text waveTitle, waveCustomerCount, scoreUI, gameOverScore, healthbarHp;
 
 	private GameManager manager;
 
@@ -38,9 +38,9 @@ public class GameUI : MonoBehaviour {
 
 	void OnNewWave (int waveNumber) {
 		waveTitle.text = "- Wave " + HumanFriendlyInteger.IntegerToWritten (waveNumber) + " -";
-		string enemyCount = (spawner.waves[waveNumber - 1].infinite) ? "Infinite" : spawner.waves[waveNumber - 1].enemyCount + "";
-		//enemyCount += " | Health: " + (int)(manager.getPlayer ().getHealth ()) + " | Mode: " + manager.getPlayer ().getGun ().fireMode;
-		waveEnemyCount.text = "Enemies: " + enemyCount;
+		string customerCount = (spawner.waves[waveNumber - 1].infinite) ? "Infinite" : spawner.waves[waveNumber - 1].customerCount + "";
+		//customerCount += " | Health: " + (int)(manager.getPlayer ().getHealth ()) + " | Mode: " + manager.getPlayer ().getGun ().fireMode;
+		waveCustomerCount.text = "Customers: " + customerCount;
 		StopCoroutine ("AnimateWaveBanner");
 		StartCoroutine ("AnimateWaveBanner");
 	}

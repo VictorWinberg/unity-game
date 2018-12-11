@@ -7,17 +7,17 @@ public class ToolController : MonoBehaviour, IInteractable, IContainable {
     public Item.State from, to;
     private Item item;
 
-    public virtual bool Place (Item item) {
-        if (this.item != null ||  item.state != from) return false;
+    public virtual bool Place (GameObject gameObject) {
+        Item item = gameObject.GetComponent<Item> ();
+        if (this.item != null || item == null || item.state != from) return false;
 
         item.transform.parent = transform;
         this.item = item;
         return true;
     }
 
-    public virtual void Remove () {
-        item = null;
-    }
+    public virtual void Remove () { item = null; }
+    public virtual List<Item> getItems () { return null; }
 
     public virtual void Interact () {
         if (item == null) return;

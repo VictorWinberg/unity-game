@@ -12,8 +12,9 @@ public class ContainerController : MonoBehaviour, IContainable, IInteractable {
 		items = new List<Item> ();
 	}
 
-	public virtual bool Place (Item item) {
-		if (!item.ready) return false;
+	public virtual bool Place (GameObject gameObject) {
+		Item item = gameObject.GetComponent<Item> ();
+		if (item == null || !item.ready) return false;
 
 		if (item.state == Item.State.Liquid) {
 			Fill (item);
@@ -25,6 +26,7 @@ public class ContainerController : MonoBehaviour, IContainable, IInteractable {
 	}
 
 	public virtual void Remove () { }
+	public virtual List<Item> getItems () { return items; }
 
 	public virtual void Interact () {
 		StartCoroutine (Shake ());

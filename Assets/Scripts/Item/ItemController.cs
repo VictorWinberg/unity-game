@@ -25,13 +25,13 @@ public class ItemController : MonoBehaviour {
             }
         } else {
             float maxDist = 2f;
-            float minDist = Mathf.Infinity;
+            float minDotDist = Mathf.Infinity;
             GameObject container = null;
             foreach (Collider hit in Physics.OverlapSphere (transform.position, maxDist)) {
                 float dist = Vector3.Distance (hit.transform.position, transform.position);
                 float dot = Vector3.Dot (transform.forward, (hit.transform.position - transform.position).normalized);
-                if (dist < minDist && dot > 0.5f && hit.gameObject.tag == "Interactable") {
-                    minDist = dist * dot;
+                if (dist * dot < minDotDist && dot > 0.5f && hit.gameObject.tag == "Interactable") {
+                    minDotDist = dist * dot;
                     container = hit.gameObject;
                 }
             }
@@ -45,13 +45,13 @@ public class ItemController : MonoBehaviour {
 
     public void Interact () {
         float maxDist = 2f;
-        float minDist = Mathf.Infinity;
+        float minDotDist = Mathf.Infinity;
         GameObject item = null;
         foreach (Collider hit in Physics.OverlapSphere (transform.position, maxDist)) {
             float dist = Vector3.Distance (hit.transform.position, transform.position);
             float dot = Vector3.Dot (transform.forward, (hit.transform.position - transform.position).normalized);
-            if (dist < minDist && dot > 0.5f && hit.gameObject.tag == "Interactable") {
-                minDist = dist * dot;
+            if (dist * dot < minDotDist && dot > 0.5f && hit.gameObject.tag == "Interactable") {
+                minDotDist = dist * dot;
                 item = hit.gameObject;
             }
         }
@@ -80,11 +80,7 @@ public class ItemController : MonoBehaviour {
     }
 
     void DropInto (GameObject container) {
-        if (item.GetComponent<Item> () == null) {
-            Drop ();
-            return;
-        }
-        if (container.GetComponent<IContainable> ().Place (item.GetComponent<Item> ())) {
+        if (container.GetComponent<IContainable> ().Place (item)) {
             Rigidbody body = item.GetComponent<Rigidbody> ();
             body.isKinematic = false;
             body.detectCollisions = true;
