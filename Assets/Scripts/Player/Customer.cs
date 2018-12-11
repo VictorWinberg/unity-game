@@ -152,6 +152,8 @@ public class Customer : LivingEntity, IContainable, IInteractable {
 		if (container == null) return false;
 
 		IEnumerable<string> items = container.getItems ().Select (item => item.name).OrderBy (x => x);
+		if (!items.Any ()) return false;
+
 		IEnumerable<string> order = new List<string> { "Water" }.OrderBy (x => x);
 		if (items.SequenceEqual (order)) Debug.Log ("Thanks for the drink!");
 		else Debug.Log ("Wrong drink!");
