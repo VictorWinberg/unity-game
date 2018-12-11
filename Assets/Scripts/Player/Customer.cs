@@ -10,7 +10,8 @@ public class Customer : LivingEntity, IContainable, IInteractable {
 	State currentState;
 
 	public ParticleSystem deathEffect;
-	public static event System.Action OnDeathStatic;
+	public static event System.Action OnServedCorrect;
+	public static event System.Action OnServedIncorrect;
 
 	UnityEngine.AI.NavMeshAgent pathfinder;
 	Transform target;
@@ -65,16 +66,13 @@ public class Customer : LivingEntity, IContainable, IInteractable {
 		originalColour = skinMaterial.color;
 	}
 
-	public override void TakeHit (float damage, Vector3 hitPoint, Vector3 hitDirection) {
+	public void Serve (bool correct) {
 		AudioManager.instance.PlaySound ("Impact", transform.position);
-		if (damage <= health) {
-			if (OnDeathStatic != null) {
-				OnDeathStatic ();
-			}
-			AudioManager.instance.PlaySound ("Customer Death", transform.position);
-			Destroy (Instantiate (deathEffect.gameObject, hitPoint, Quaternion.FromToRotation (Vector3.forward, hitDirection)) as GameObject, deathEffect.startLifetime);
-		}
-		base.TakeHit (damage, hitPoint, hitDirection);
+		if (correct && OnServedCorrect != null) OnServedCorrect ();
+		else if (!correct && OnServedIncorrect != null) OnServedIncorrect ();
+		AudioManager.instance.PlaySound ("Customer Death", transform.position);
+		Destroy (Instantiate (deathEffect.gameObject, transform.position, Quaternion.FromToRotation (Vector3.forward, Vector3.zero)) as GameObject, deathEffect.startLifetime);
+		base.TakeHit (health, transform.position, Vector3.zero);
 	}
 
 	void OnTargetDeath () {
@@ -155,10 +153,7 @@ public class Customer : LivingEntity, IContainable, IInteractable {
 		if (!items.Any ()) return false;
 
 		IEnumerable<string> order = new List<string> { "Water" }.OrderBy (x => x);
-		if (items.SequenceEqual (order)) Debug.Log ("Thanks for the drink!");
-		else Debug.Log ("Wrong drink!");
-
-		TakeDamage (health);
+		Serve (items.SequenceEqual (order));
 		Destroy (gameObject);
 
 		return true;

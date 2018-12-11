@@ -10,11 +10,12 @@ public class Scoreboard : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Customer.OnDeathStatic += OnCustomerKilled;
+		Customer.OnServedCorrect += OnCustomerServedCorrect;
+		Customer.OnServedIncorrect += OnCustomerServedIncorrect;
 		FindObjectOfType<Player> ().OnDeath += OnPlayerDeath;
 	}
 
-	void OnCustomerKilled () {
+	void OnCustomerServedCorrect () {
 		if (Time.time < lastKillTime + killStreakExpiry) {
 			killStreak++;
 		} else {
@@ -26,7 +27,12 @@ public class Scoreboard : MonoBehaviour {
 		score += 5 + 2 * killStreak;
 	}
 
+	void OnCustomerServedIncorrect () {
+		score -= 5 + 2 * killStreak;
+	}
+
 	void OnPlayerDeath () {
-		Customer.OnDeathStatic -= OnCustomerKilled;
+		Customer.OnServedCorrect -= OnCustomerServedCorrect;
+		Customer.OnServedIncorrect -= OnCustomerServedIncorrect;
 	}
 }
