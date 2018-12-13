@@ -13,29 +13,36 @@ public class Menu : MonoBehaviour {
 	public int[] screenWidths;
 
 	private int resolutionIndex;
-
-	void Awake () {
-		GameObject go = Instantiate (Resources.Load ("AudioManager"), Vector3.zero, Quaternion.identity) as GameObject;
-
-		map = MapGenerator.Create ();
-		map.GenerateMap ();
-	}
-
-	MapGenerator map;
+	MapGenerator mapGen;
 	float starttime = 3f;
 	float timer = 0;
 
+	void Awake () {
+		Instantiate (Resources.Load ("AudioManager"), Vector3.zero, Quaternion.identity);
+
+		mapGen = FindObjectOfType<MapGenerator> ();
+	}
+
 	void Update () {
-		map.transform.RotateAround (Vector3.zero, Vector3.up, .3f);
+		mapGen.transform.RotateAround (Vector3.zero, Vector3.up, .3f);
 
 		timer += Time.deltaTime;
 		if (timer > starttime) {
 			timer = 0;
-			map.mapIndex++;
-			map.transform.rotation = Quaternion.identity;
-			map.GenerateMap ();
+			RandomMap ();
 		}
+	}
 
+	void RandomMap () {
+		mapGen.map.mapSize = new MapGenerator.Coord ((int) Random.Range (8, 14), (int) Random.Range (8, 14));
+		mapGen.map.obstaclePercent = Random.Range (0f, 5f * Mathf.Log (3) / 30);
+		mapGen.map.minObstacleHeight = Random.Range (0.2f, 1f);
+		mapGen.map.maxObstacleHeight = mapGen.map.minObstacleHeight + Random.Range (0.2f, 3f);
+		mapGen.map.foregroundColor = new Color (Random.Range (0, 1f), Random.Range (0, 1f), Random.Range (0, 1f));
+		mapGen.map.backgroundColor = new Color (Random.Range (0, 1f), Random.Range (0, 1f), Random.Range (0, 1f));
+		mapGen.seed++;
+		mapGen.transform.rotation = Quaternion.identity;
+		mapGen.GenerateMap ();
 	}
 
 	void Start () {

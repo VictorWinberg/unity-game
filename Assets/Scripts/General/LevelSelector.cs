@@ -5,6 +5,10 @@ public class LevelSelector : MonoBehaviour {
 	public SceneFader fader;
 	public Transform content;
 
+	void Awake () {
+		Instantiate (Resources.Load ("AudioManager"), Vector3.zero, Quaternion.identity);
+	}
+
 	void Start () {
 		int levelReached = PlayerPrefs.GetInt ("levelReached", 1);
 		int levels = levelReached + 2;

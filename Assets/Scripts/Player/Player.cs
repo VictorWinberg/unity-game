@@ -19,7 +19,7 @@ public class Player : LivingEntity {
 	public string fire1 { get; set; }
 	public string fire2 { get; set; }
 
-	void Start () {
+	void Awake () {
 		controller = GetComponent<PlayerController> ();
 		gunController = GetComponent<GunController> ();
 		itemController = GetComponent<ItemController> ();

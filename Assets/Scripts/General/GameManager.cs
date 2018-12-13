@@ -3,10 +3,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
-	public static int waves = 30;
 	private Player p1, p2;
 	private Customer customer;
-	private Spawner spawner;
 
 	void Awake () {
 		FindObjectOfType<MapGenerator> ().GenerateMap ();
@@ -21,7 +19,6 @@ public class GameManager : MonoBehaviour {
 		p2.fire1 = "Fire1_P2";
 		p2.fire2 = "Fire2_P2";
 		customer = ((GameObject) Resources.Load ("Customer")).GetComponent<Customer> ();
-		spawner = Spawner.Create ();
 		GameObject audioManager = Instantiate (Resources.Load ("AudioManager"), Vector3.zero, Quaternion.identity) as GameObject;
 		audioManager.GetComponent<AudioManager> ().SetPlayer (p1.gameObject);
 	}

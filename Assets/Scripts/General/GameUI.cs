@@ -16,10 +16,13 @@ public class GameUI : MonoBehaviour {
 	Spawner spawner;
 	Player p1, p2;
 
-	void Start () {
+	void Awake () {
 		manager = FindObjectOfType<GameManager> ();
 		spawner = FindObjectOfType<Spawner> ();
 		spawner.OnNewWave += OnNewWave;
+	}
+
+	void Start () {
 		p1 = manager.getPlayer1 ();
 		p2 = manager.getPlayer2 ();
 		p1.OnDeath += OnGameOver;
@@ -63,7 +66,7 @@ public class GameUI : MonoBehaviour {
 				}
 			}
 
-			waveBanner.anchoredPosition = Vector2.up * Mathf.Lerp (-150, 150, animatePercent);
+			waveBanner.anchoredPosition = Vector2.up * Mathf.Lerp (-150, 100, animatePercent);
 			yield return null;
 		}
 	}

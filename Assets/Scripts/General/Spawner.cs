@@ -5,7 +5,7 @@ public class Spawner : MonoBehaviour {
 
 	public bool developerMode;
 
-	public Wave[] waves { get; private set; }
+	public Wave[] waves;
 	public Customer customer;
 
 	LivingEntity player;
@@ -28,25 +28,25 @@ public class Spawner : MonoBehaviour {
 
 	public event System.Action<int> OnNewWave;
 
-	public static Spawner Create () {
-		GameObject go = new GameObject ("Spawner");
-		Spawner spawner = go.AddComponent<Spawner> ();
-		spawner.customer = ((GameObject) Resources.Load ("Customer")).GetComponent<Customer> ();
-		spawner.developerMode = true;
-		Wave[] myWaves = new Wave[GameManager.waves];
-		for (int i = 0; i < myWaves.Length; i++) {
-			myWaves[i] = new Wave ();
-			myWaves[i].customerCount = (int) Random.Range (3 * (i + 1), 5 * (i + 1));
-			myWaves[i].timeBetweenSpawns = Random.Range (.2f, 1f);
+	// public static Spawner Create () {
+	// 	GameObject go = new GameObject ("Spawner");
+	// 	Spawner spawner = go.AddComponent<Spawner> ();
+	// 	spawner.customer = ((GameObject) Resources.Load ("Customer")).GetComponent<Customer> ();
+	// 	spawner.developerMode = true;
+	// 	Wave[] myWaves = new Wave[GameManager.waves];
+	// 	for (int i = 0; i < myWaves.Length; i++) {
+	// 		myWaves[i] = new Wave ();
+	// 		myWaves[i].customerCount = (int) Random.Range (3 * (i + 1), 5 * (i + 1));
+	// 		myWaves[i].timeBetweenSpawns = Random.Range (.2f, 1f);
 
-			myWaves[i].moveSpeed = 2f + 0.2f * i;
-			myWaves[i].damage = (int) (20 * Mathf.Log (i + 3) / (i + 1));
-			myWaves[i].health = (int) (i / 5 + 1);
-			myWaves[i].skinColor = new Color (Random.Range (0, 1f), Random.Range (0, 1f), Random.Range (0, 1f));
-		}
-		spawner.waves = myWaves;
-		return spawner;
-	}
+	// 		myWaves[i].moveSpeed = 2f + 0.2f * i;
+	// 		myWaves[i].damage = (int) (20 * Mathf.Log (i + 3) / (i + 1));
+	// 		myWaves[i].health = (int) (i / 5 + 1);
+	// 		myWaves[i].skinColor = new Color (Random.Range (0, 1f), Random.Range (0, 1f), Random.Range (0, 1f));
+	// 	}
+	// 	spawner.waves = myWaves;
+	// 	return spawner;
+	// }
 
 	void Start () {
 		if (player == null)
@@ -131,10 +131,6 @@ public class Spawner : MonoBehaviour {
 		}
 	}
 
-	void ResetPlayerPosition () {
-		player.transform.position = map.getTileFromPosition (Vector3.zero).position + Vector3.up * 1.5f;
-	}
-
 	void NextWave () {
 		if (currentWaveNumber > 0) {
 			AudioManager.instance.PlaySound ("Level Complete");
@@ -147,8 +143,9 @@ public class Spawner : MonoBehaviour {
 			customersRemainingToSpawn = currentWave.customerCount;
 			customersRemainingAlive = customersRemainingToSpawn;
 
-			if (OnNewWave != null) OnNewWave (currentWaveNumber);
-			// ResetPlayerPosition ();
+			OnNewWave (currentWaveNumber);
+		} else {
+			Debug.Log ("FINISHED");
 		}
 	}
 
