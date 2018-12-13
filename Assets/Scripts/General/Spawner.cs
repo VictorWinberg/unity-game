@@ -60,12 +60,6 @@ public class Spawner : MonoBehaviour {
 		NextWave ();
 	}
 
-	public Player setPlayer {
-		set {
-			player = value;
-		}
-	}
-
 	void Update () {
 		if (isDisabled)
 			return;
@@ -145,7 +139,7 @@ public class Spawner : MonoBehaviour {
 
 			OnNewWave (currentWaveNumber);
 		} else {
-			FindObjectOfType<CompleteLevel> ().Complete ();
+			FindObjectOfType<Level> ().Complete ();
 		}
 	}
 

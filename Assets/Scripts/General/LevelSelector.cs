@@ -11,7 +11,7 @@ public class LevelSelector : MonoBehaviour {
 
 	void Start () {
 		int levelReached = PlayerPrefs.GetInt ("levelReached", 1);
-		int levels = levelReached + 2;
+		int levels = levelReached + 1;
 
 		for (int i = 0; i < levels; i++) {
 			int level = i + 1;

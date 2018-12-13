@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour {
 	private Customer customer;
 
 	void Awake () {
-		FindObjectOfType<MapGenerator> ().GenerateMap ();
 		p1 = ((GameObject) Instantiate (Resources.Load ("Player"), Vector3.zero, Quaternion.identity)).GetComponent<Player> ();
 		p1.horizontal = "Horizontal_P1";
 		p1.vertical = "Vertical_P1";
@@ -24,7 +23,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Start () {
-		//p1.startingHealth = 100000;
+		FindObjectOfType<MapGenerator> ().GenerateMap ();
 	}
 
 	void Update () {

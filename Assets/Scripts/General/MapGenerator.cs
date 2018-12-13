@@ -19,8 +19,9 @@ public class MapGenerator : MonoBehaviour {
 	Transform[, ] tileMap;
 
 	public void GenerateMap () {
+		int level = FindObjectOfType<Level> ().level;
 		tileMap = new Transform[map.mapSize.x, map.mapSize.y];
-		System.Random r = new System.Random (seed);
+		System.Random r = new System.Random (seed + level);
 
 		// Generating coords
 		tileCoords = new List<Coord> ();
@@ -29,7 +30,7 @@ public class MapGenerator : MonoBehaviour {
 				tileCoords.Add (new Coord (x, y));
 			}
 		}
-		shuffledCoords = new Queue<Coord> (Utility.ShuffleArray (tileCoords.ToArray (), seed));
+		shuffledCoords = new Queue<Coord> (Utility.ShuffleArray (tileCoords.ToArray (), seed + level));
 
 		// Create mapholder object
 		string holderName = "Generated Map";
@@ -84,7 +85,7 @@ public class MapGenerator : MonoBehaviour {
 				currentObstacleCount--;
 			}
 		}
-		shuffledOpenCoords = new Queue<Coord> (Utility.ShuffleArray (openCoords.ToArray (), seed));
+		shuffledOpenCoords = new Queue<Coord> (Utility.ShuffleArray (openCoords.ToArray (), seed + level));
 
 		// Creating navmesh mask
 		Transform maskLeft = Instantiate (navmeshMaskPrefab, Vector3.left * (map.mapSize.x + maxMapSize.x) / 4f * tileSize, Quaternion.identity) as Transform;
