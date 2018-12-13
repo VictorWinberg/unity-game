@@ -145,7 +145,7 @@ public class Spawner : MonoBehaviour {
 
 			OnNewWave (currentWaveNumber);
 		} else {
-			Debug.Log ("FINISHED");
+			FindObjectOfType<CompleteLevel> ().Complete ();
 		}
 	}
 
