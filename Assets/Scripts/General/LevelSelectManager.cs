@@ -33,4 +33,8 @@ public class LevelSelectManager : MonoBehaviour {
 		Level.instance.level = level;
 		SceneFader.instance.FadeTo ("Game");
 	}
+
+	public void MainMenu () {
+		SceneFader.instance.FadeTo ("Menu");
+	}
 }
