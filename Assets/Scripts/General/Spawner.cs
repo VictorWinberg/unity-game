@@ -139,7 +139,7 @@ public class Spawner : MonoBehaviour {
 
 			OnNewWave (currentWaveNumber);
 		} else {
-			FindObjectOfType<Level> ().Complete ();
+			Level.instance.Complete ();
 		}
 	}
 

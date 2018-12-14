@@ -19,7 +19,7 @@ public class MapGenerator : MonoBehaviour {
 	Transform[, ] tileMap;
 
 	public void GenerateMap () {
-		int level = FindObjectOfType<Level> ().level;
+		int level = Level.instance.level;
 		tileMap = new Transform[map.mapSize.x, map.mapSize.y];
 		System.Random r = new System.Random (seed + level);
 

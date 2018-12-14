@@ -93,10 +93,10 @@ public class GameUI : MonoBehaviour {
 
 	// UI Input
 	public void StartNewGame () {
-		SceneManager.LoadScene ("Game");
+		SceneFader.instance.FadeTo ("Game");
 	}
 
 	public void ReturnToMainMenu () {
-		SceneManager.LoadScene ("Menu");
+		SceneFader.instance.FadeTo ("Menu");
 	}
 }

@@ -3,16 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Level : MonoBehaviour {
-    public int level { get; private set; }
-    public SceneFader sceneFader;
+    public int level;
+
+    public static Level instance;
 
     void Awake () {
-        level = PlayerPrefs.GetInt ("levelReached", 1);
+        if (instance != null) {
+			Destroy (gameObject);
+			return;
+		}
+		instance = this;
+		DontDestroyOnLoad (gameObject);
     }
 
     public void Complete () {
-        PlayerPrefs.SetInt ("levelReached", level + 1);
-        PlayerPrefs.Save ();
-        sceneFader.FadeTo ("LevelSelect");
+        List<int> levels = new List<int>(PlayerPrefsX.GetIntArray ("Levels"));
+        if(level > levels.Count - 1) {
+            levels.Add(1);
+        } else {
+            levels[level] += 1;
+        }
+        PlayerPrefsX.SetIntArray ("Levels", levels.ToArray());
+        SceneFader.instance.FadeTo ("LevelSelect");
     }
 }

@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour {
 	private Customer customer;
 
 	void Awake () {
+		Instantiate (Resources.Load ("Level"), Vector3.zero, Quaternion.identity);
+		Instantiate (Resources.Load ("SceneFader"), Vector3.zero, Quaternion.identity);
+		
 		p1 = ((GameObject) Instantiate (Resources.Load ("Player"), Vector3.zero, Quaternion.identity)).GetComponent<Player> ();
 		p1.horizontal = "Horizontal_P1";
 		p1.vertical = "Vertical_P1";
@@ -18,6 +21,7 @@ public class GameManager : MonoBehaviour {
 		p2.fire1 = "Fire1_P2";
 		p2.fire2 = "Fire2_P2";
 		customer = ((GameObject) Resources.Load ("Customer")).GetComponent<Customer> ();
+		
 		GameObject audioManager = Instantiate (Resources.Load ("AudioManager"), Vector3.zero, Quaternion.identity) as GameObject;
 		audioManager.GetComponent<AudioManager> ().SetPlayer (p1.gameObject);
 	}

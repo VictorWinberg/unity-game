@@ -6,6 +6,15 @@ using UnityEngine.UI;
 public class SceneFader : MonoBehaviour {
 	public Image img;
 	public AnimationCurve curve;
+	public static SceneFader instance;
+
+	void Awake () {
+		if (instance != null) {
+			Destroy (instance.gameObject);
+		}
+		instance = this;
+		DontDestroyOnLoad (gameObject);
+	}
 
 	void Start () {
 		StartCoroutine (FadeIn ());

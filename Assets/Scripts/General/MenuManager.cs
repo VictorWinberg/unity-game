@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Menu : MonoBehaviour {
+public class MenuManager : MonoBehaviour {
 
 	public GameObject mainMenuHolder, optionsMenuHolder;
 
@@ -19,6 +19,8 @@ public class Menu : MonoBehaviour {
 
 	void Awake () {
 		Instantiate (Resources.Load ("AudioManager"), Vector3.zero, Quaternion.identity);
+		Instantiate (Resources.Load ("SceneFader"), Vector3.zero, Quaternion.identity);
+		Instantiate (Resources.Load ("Level"), Vector3.zero, Quaternion.identity);
 
 		mapGen = FindObjectOfType<MapGenerator> ();
 	}
@@ -61,7 +63,7 @@ public class Menu : MonoBehaviour {
 	}
 
 	public void Play () {
-		SceneManager.LoadScene ("LevelSelect");
+		SceneFader.instance.FadeTo ("LevelSelect");
 	}
 
 	public void MainMenu () {
@@ -111,6 +113,10 @@ public class Menu : MonoBehaviour {
 
 		PlayerPrefs.SetInt ("Fullscreen", isFullscreen ? 1 : 0);
 		PlayerPrefs.Save ();
+	}
+
+	public void ResetPlayerPrefs() {
+		 PlayerPrefs.DeleteAll();
 	}
 
 	public void Quit () {
