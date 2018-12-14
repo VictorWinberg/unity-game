@@ -18,6 +18,7 @@ public class LevelSelector : MonoBehaviour {
 			GameObject go = (GameObject) Instantiate (Resources.Load ("LevelButton"), Vector3.zero, Quaternion.identity);
 			go.transform.SetParent (content);
 			go.transform.GetChild (0).GetComponent<Text> ().text = level.ToString ();
+			go.GetComponent<StarController> ().StarCount = 1;
 
 			Button levelButton = go.GetComponent<Button> ();
 			levelButton.onClick.AddListener (() => Select (level));
