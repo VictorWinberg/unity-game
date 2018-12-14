@@ -10,19 +10,19 @@ public class LevelSelector : MonoBehaviour {
 	}
 
 	void Start () {
-		int levelReached = PlayerPrefs.GetInt ("levelReached", 1);
-		int levels = levelReached + 1;
+		int[] levels = PlayerPrefsX.GetIntArray ("Levels", 0, 1);
 
-		for (int i = 0; i < levels; i++) {
+		for (int i = 0; i < levels.Length + 1; i++) {
 			int level = i + 1;
 			GameObject go = (GameObject) Instantiate (Resources.Load ("LevelButton"), Vector3.zero, Quaternion.identity);
 			go.transform.SetParent (content);
 			go.transform.GetChild (0).GetComponent<Text> ().text = level.ToString ();
-			go.GetComponent<StarController> ().StarCount = 1;
 
 			Button levelButton = go.GetComponent<Button> ();
-			levelButton.onClick.AddListener (() => Select (level));
-			if (i + 1 > levelReached) {
+			if (i < levels.Length) {
+				levelButton.onClick.AddListener (() => Select (level));
+				go.GetComponent<StarController> ().StarCount = levels[i];
+			} else {
 				levelButton.interactable = false;
 			}
 		}
