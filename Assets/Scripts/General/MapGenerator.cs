@@ -107,21 +107,21 @@ public class MapGenerator : MonoBehaviour {
 		// Creating walls
 		int height = 2;
 
-		Transform wallWest = Instantiate (wallPrefab, Vector3.left * (0.5f + map.mapSize.x / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
+		Transform wallWest = Instantiate (wallPrefab, Vector3.left * (0.25f + map.mapSize.x / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
 		wallWest.parent = mapHolder;
-		wallWest.localScale = new Vector3 (tileSize, height, map.mapSize.y * tileSize);
+		wallWest.localScale = new Vector3 (tileSize / 2f, height, map.mapSize.y * tileSize);
 
-		Transform wallEast = Instantiate (wallPrefab, Vector3.right * (0.5f + map.mapSize.x / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
+		Transform wallEast = Instantiate (wallPrefab, Vector3.right * (0.25f + map.mapSize.x / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
 		wallEast.parent = mapHolder;
-		wallEast.localScale = new Vector3 (tileSize, height, map.mapSize.y * tileSize);
+		wallEast.localScale = new Vector3 (tileSize / 2f, height, map.mapSize.y * tileSize);
 
-		Transform wallNorth = Instantiate (wallPrefab, Vector3.forward * (0.5f + map.mapSize.y / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
+		Transform wallNorth = Instantiate (wallPrefab, Vector3.forward * (0.25f + map.mapSize.y / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
 		wallNorth.parent = mapHolder;
-		wallNorth.localScale = new Vector3 ((map.mapSize.x + 2f) * tileSize, height, tileSize);
+		wallNorth.localScale = new Vector3 ((map.mapSize.x + 1f) * tileSize, height, tileSize / 2f);
 
-		Transform wallSouth = Instantiate (wallPrefab, Vector3.back * (0.5f + map.mapSize.y / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
+		Transform wallSouth = Instantiate (wallPrefab, Vector3.back * (0.25f + map.mapSize.y / 2f) * tileSize + Vector3.up * (height / 2f - .1f), Quaternion.identity) as Transform;
 		wallSouth.parent = mapHolder;
-		wallSouth.localScale = new Vector3 ((map.mapSize.x + 2f) * tileSize, height, tileSize);
+		wallSouth.localScale = new Vector3 ((map.mapSize.x + 1f) * tileSize, height, tileSize / 2f);
 
 		navmeshFloor.localScale = new Vector3 (maxMapSize.x, maxMapSize.y) * tileSize;
 		mapFloor.localScale = new Vector3 (map.mapSize.x * tileSize, map.mapSize.y * tileSize, 0.05f);
