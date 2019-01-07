@@ -6,7 +6,7 @@ public class MapGenerator : MonoBehaviour {
 	public Map map;
 	public int seed;
 
-	public Transform tilePrefab, obstaclePrefab, wallPrefab, mapFloor, navmeshFloor, navmeshMaskPrefab;
+	public Transform tilePrefab, obstaclePrefab, wallPrefab, barPrefab, mapFloor, navmeshFloor, navmeshMaskPrefab;
 	public Vector2 maxMapSize;
 
 	[Range (0, 1)]
@@ -108,25 +108,25 @@ public class MapGenerator : MonoBehaviour {
 		mapFloor.localScale = new Vector3 (map.mapSize.x * tileSize, map.mapSize.y * tileSize, 0.05f);
 
 		// Creating outer walls
-		float height = 2f;
-		Vector3 upVector = Vector3.up * (height / 2f - .1f);
 		float margin = 0.5f * tileSize;
 		float width = map.mapSize.x * tileSize + margin;
 		float depth = map.mapSize.y * tileSize + margin;
+		float height = 2f;
+		Vector3 wallVectorUp = Vector3.up * (height / 2f - .1f);
 
-		Transform wallWest = Instantiate (wallPrefab, Vector3.left * width / 2f + upVector, Quaternion.identity) as Transform;
+		Transform wallWest = Instantiate (wallPrefab, Vector3.left * width / 2f + wallVectorUp, Quaternion.identity) as Transform;
 		wallWest.parent = mapHolder;
 		wallWest.localScale = new Vector3 (tileSize / 2f, height, depth - margin);
 
-		Transform wallEast = Instantiate (wallPrefab, Vector3.right * width / 2f + upVector, Quaternion.identity) as Transform;
+		Transform wallEast = Instantiate (wallPrefab, Vector3.right * width / 2f + wallVectorUp, Quaternion.identity) as Transform;
 		wallEast.parent = mapHolder;
 		wallEast.localScale = new Vector3 (tileSize / 2f, height, depth - margin);
 
-		Transform wallNorth = Instantiate (wallPrefab, Vector3.forward * depth / 2f + upVector, Quaternion.identity) as Transform;
+		Transform wallNorth = Instantiate (wallPrefab, Vector3.forward * depth / 2f + wallVectorUp, Quaternion.identity) as Transform;
 		wallNorth.parent = mapHolder;
 		wallNorth.localScale = new Vector3 (width + margin, height, tileSize / 2f);
 
-		Transform wallSouth = Instantiate (wallPrefab, Vector3.back * depth / 2f + upVector, Quaternion.identity) as Transform;
+		Transform wallSouth = Instantiate (wallPrefab, Vector3.back * depth / 2f + wallVectorUp, Quaternion.identity) as Transform;
 		wallSouth.parent = mapHolder;
 		wallSouth.localScale = new Vector3 (width + margin, height, tileSize / 2f);
 
@@ -134,22 +134,24 @@ public class MapGenerator : MonoBehaviour {
 		float ratio = (float) r.NextDouble ();
 		float barWidth = (ratio * (map.mapSize.x - 3f) + 3f) * tileSize + margin;
 		float barDepth = ((1 - ratio) * (map.mapSize.y - 3f) + 3f) * tileSize + margin;
+		float barHeight = 1f;
+		Vector3 barVectorUp = Vector3.up * (barHeight / 2f - 0.1f);
 
-		Transform barWest = Instantiate (wallPrefab, Vector3.left * barWidth / 2f + upVector, Quaternion.identity) as Transform;
+		Transform barWest = Instantiate (barPrefab, Vector3.left * barWidth / 2f + barVectorUp, Quaternion.identity) as Transform;
 		barWest.parent = mapHolder;
-		barWest.localScale = new Vector3 (tileSize / 2f, height, barDepth - margin);
+		barWest.localScale = new Vector3 (tileSize / 2f, barHeight, barDepth - margin);
 
-		Transform barEast = Instantiate (wallPrefab, Vector3.right * barWidth / 2f + upVector, Quaternion.identity) as Transform;
+		Transform barEast = Instantiate (barPrefab, Vector3.right * barWidth / 2f + barVectorUp, Quaternion.identity) as Transform;
 		barEast.parent = mapHolder;
-		barEast.localScale = new Vector3 (tileSize / 2f, height, barDepth - margin);
+		barEast.localScale = new Vector3 (tileSize / 2f, barHeight, barDepth - margin);
 
-		Transform barNorth = Instantiate (wallPrefab, Vector3.forward * barDepth / 2f + upVector, Quaternion.identity) as Transform;
+		Transform barNorth = Instantiate (barPrefab, Vector3.forward * barDepth / 2f + barVectorUp, Quaternion.identity) as Transform;
 		barNorth.parent = mapHolder;
-		barNorth.localScale = new Vector3 (barWidth + margin, height, tileSize / 2f);
+		barNorth.localScale = new Vector3 (barWidth + margin, barHeight, tileSize / 2f);
 
-		Transform barSouth = Instantiate (wallPrefab, Vector3.back * barDepth / 2f + upVector, Quaternion.identity) as Transform;
+		Transform barSouth = Instantiate (barPrefab, Vector3.back * barDepth / 2f + barVectorUp, Quaternion.identity) as Transform;
 		barSouth.parent = mapHolder;
-		barSouth.localScale = new Vector3 (barWidth + margin, height, tileSize / 2f);
+		barSouth.localScale = new Vector3 (barWidth + margin, barHeight, tileSize / 2f);
 	}
 
 	/** Flood-fill algorithm*/
