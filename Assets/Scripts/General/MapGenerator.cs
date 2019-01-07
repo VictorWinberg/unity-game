@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour {
 	public Map map;
+	public Workarea[] workareas;
 	public int seed;
 
-	public Transform tilePrefab, obstaclePrefab, wallPrefab, barPrefab, mapFloor, navmeshFloor, navmeshMaskPrefab;
+	public Transform tilePrefab, obstaclePrefab, wallPrefab, barPrefab, counterPrefab, mapFloor, navmeshFloor, navmeshMaskPrefab;
 	public Vector2 maxMapSize;
 
 	[Range (0, 1)]
@@ -132,26 +133,41 @@ public class MapGenerator : MonoBehaviour {
 
 		// Creating inner walls
 		float ratio = (float) r.NextDouble ();
-		float barWidth = (ratio * (map.mapSize.x - 3f) + 3f) * tileSize + margin;
-		float barDepth = ((1 - ratio) * (map.mapSize.y - 3f) + 3f) * tileSize + margin;
+		int barSizeX = Mathf.RoundToInt (ratio * (map.mapSize.x - 3) + 3);
+		int barSizeY = Mathf.RoundToInt ((1 - ratio) * (map.mapSize.y - 3f) + 3f);
+
+		float barWidth = barSizeX * tileSize + margin;
+		float barDepth = barSizeY * tileSize + margin;
 		float barHeight = 1f;
+
 		Vector3 barVectorUp = Vector3.up * (barHeight / 2f - 0.1f);
 
+		Transform barHolder = new GameObject ("Bar").transform;
+		barHolder.parent = mapHolder;
+
 		Transform barWest = Instantiate (barPrefab, Vector3.left * barWidth / 2f + barVectorUp, Quaternion.identity) as Transform;
-		barWest.parent = mapHolder;
+		barWest.parent = barHolder;
 		barWest.localScale = new Vector3 (tileSize / 2f, barHeight, barDepth - margin);
 
 		Transform barEast = Instantiate (barPrefab, Vector3.right * barWidth / 2f + barVectorUp, Quaternion.identity) as Transform;
-		barEast.parent = mapHolder;
+		barEast.parent = barHolder;
 		barEast.localScale = new Vector3 (tileSize / 2f, barHeight, barDepth - margin);
 
 		Transform barNorth = Instantiate (barPrefab, Vector3.forward * barDepth / 2f + barVectorUp, Quaternion.identity) as Transform;
-		barNorth.parent = mapHolder;
+		barNorth.parent = barHolder;
 		barNorth.localScale = new Vector3 (barWidth + margin, barHeight, tileSize / 2f);
 
 		Transform barSouth = Instantiate (barPrefab, Vector3.back * barDepth / 2f + barVectorUp, Quaternion.identity) as Transform;
-		barSouth.parent = mapHolder;
+		barSouth.parent = barHolder;
 		barSouth.localScale = new Vector3 (barWidth + margin, barHeight, tileSize / 2f);
+
+		int barPosX = r.Next (map.mapSize.x - barSizeX + 1);
+		int barPosY = r.Next (map.mapSize.y - barSizeY + 1);
+
+		Vector3 origin = Vector3.right * width / 2f + Vector3.forward * depth / 2f;
+		Vector3 barSize = Vector3.right * barWidth / 2f + Vector3.forward * barDepth / 2f;
+		Vector3 barPos = Vector3.right * barPosX * tileSize + Vector3.forward * barPosY * tileSize;
+		barHolder.position = origin - barSize - barPos;
 	}
 
 	/** Flood-fill algorithm*/
@@ -247,5 +263,11 @@ public class MapGenerator : MonoBehaviour {
 				return new Coord (mapSize.x / 2, mapSize.y / 2);
 			}
 		}
+	}
+
+	[System.Serializable]
+	public class Workarea {
+		public Transform tool;
+		public Vector2 amountRange;
 	}
 }
