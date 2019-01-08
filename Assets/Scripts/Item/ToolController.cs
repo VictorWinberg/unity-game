@@ -12,6 +12,8 @@ public class ToolController : MonoBehaviour, IInteractable, IContainable {
         if (this.item != null || item == null || item.state != from) return false;
 
         item.transform.parent = transform;
+        Vector3 pos = item.transform.localPosition;
+        item.transform.localPosition = Vector3.up * pos.y;
         this.item = item;
         return true;
     }
