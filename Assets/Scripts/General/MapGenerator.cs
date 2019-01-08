@@ -140,26 +140,68 @@ public class MapGenerator : MonoBehaviour {
 		float barDepth = barSizeY * tileSize + margin;
 		float barHeight = 1f;
 
+		bool openVertical = barSizeX > barSizeY;
+
 		Vector3 barVectorUp = Vector3.up * (barHeight / 2f - 0.1f);
 
 		Transform barHolder = new GameObject ("Bar").transform;
 		barHolder.parent = mapHolder;
 
-		Transform barWest = Instantiate (barPrefab, Vector3.left * barWidth / 2f + barVectorUp, Quaternion.identity) as Transform;
-		barWest.parent = barHolder;
-		barWest.localScale = new Vector3 (tileSize / 2f, barHeight, barDepth - margin);
+		if (openVertical) {
+			float openPos = (barWidth + tileSize + margin) / 4f;
+			float openWidth = barWidth - tileSize + margin;
 
-		Transform barEast = Instantiate (barPrefab, Vector3.right * barWidth / 2f + barVectorUp, Quaternion.identity) as Transform;
-		barEast.parent = barHolder;
-		barEast.localScale = new Vector3 (tileSize / 2f, barHeight, barDepth - margin);
+			Transform barWest = Instantiate (barPrefab, Vector3.left * barWidth / 2f + barVectorUp, Quaternion.identity) as Transform;
+			barWest.parent = barHolder;
+			barWest.localScale = new Vector3 (tileSize / 2f, barHeight, barDepth - margin);
 
-		Transform barNorth = Instantiate (barPrefab, Vector3.forward * barDepth / 2f + barVectorUp, Quaternion.identity) as Transform;
-		barNorth.parent = barHolder;
-		barNorth.localScale = new Vector3 (barWidth + margin, barHeight, tileSize / 2f);
+			Transform barEast = Instantiate (barPrefab, Vector3.right * barWidth / 2f + barVectorUp, Quaternion.identity) as Transform;
+			barEast.parent = barHolder;
+			barEast.localScale = new Vector3 (tileSize / 2f, barHeight, barDepth - margin);
 
-		Transform barSouth = Instantiate (barPrefab, Vector3.back * barDepth / 2f + barVectorUp, Quaternion.identity) as Transform;
-		barSouth.parent = barHolder;
-		barSouth.localScale = new Vector3 (barWidth + margin, barHeight, tileSize / 2f);
+			Transform barNorthW = Instantiate (barPrefab, Vector3.forward * barDepth / 2f + Vector3.left * openPos + barVectorUp, Quaternion.identity) as Transform;
+			barNorthW.parent = barHolder;
+			barNorthW.localScale = new Vector3 (openWidth / 2f, barHeight, tileSize / 2f);
+
+			Transform barNorthE = Instantiate (barPrefab, Vector3.forward * barDepth / 2f + Vector3.right * openPos + barVectorUp, Quaternion.identity) as Transform;
+			barNorthE.parent = barHolder;
+			barNorthE.localScale = new Vector3 (openWidth / 2f, barHeight, tileSize / 2f);
+
+			Transform barSouthW = Instantiate (barPrefab, Vector3.back * barDepth / 2f + Vector3.left * openPos + barVectorUp, Quaternion.identity) as Transform;
+			barSouthW.parent = barHolder;
+			barSouthW.localScale = new Vector3 (openWidth / 2f, barHeight, tileSize / 2f);
+
+			Transform barSouthE = Instantiate (barPrefab, Vector3.back * barDepth / 2f + Vector3.right * openPos + barVectorUp, Quaternion.identity) as Transform;
+			barSouthE.parent = barHolder;
+			barSouthE.localScale = new Vector3 (openWidth / 2f, barHeight, tileSize / 2f);
+		} else {
+			float openPos = (barDepth + tileSize + margin) / 4f;
+			float openDepth = barDepth - tileSize + margin;
+
+			Transform barNorth = Instantiate (barPrefab, Vector3.forward * barDepth / 2f + barVectorUp, Quaternion.identity) as Transform;
+			barNorth.parent = barHolder;
+			barNorth.localScale = new Vector3 (barWidth + margin, barHeight, tileSize / 2f);
+
+			Transform barSouth = Instantiate (barPrefab, Vector3.back * barDepth / 2f + barVectorUp, Quaternion.identity) as Transform;
+			barSouth.parent = barHolder;
+			barSouth.localScale = new Vector3 (barWidth + margin, barHeight, tileSize / 2f);
+
+			Transform barWestN = Instantiate (barPrefab, Vector3.left * barWidth / 2f + Vector3.forward * openPos + barVectorUp, Quaternion.identity) as Transform;
+			barWestN.parent = barHolder;
+			barWestN.localScale = new Vector3 (tileSize / 2f, barHeight, openDepth / 2f);
+
+			Transform barWestS = Instantiate (barPrefab, Vector3.left * barWidth / 2f + Vector3.back * openPos + barVectorUp, Quaternion.identity) as Transform;
+			barWestS.parent = barHolder;
+			barWestS.localScale = new Vector3 (tileSize / 2f, barHeight, openDepth / 2f);
+
+			Transform barEastN = Instantiate (barPrefab, Vector3.right * barWidth / 2f + Vector3.forward * openPos + barVectorUp, Quaternion.identity) as Transform;
+			barEastN.parent = barHolder;
+			barEastN.localScale = new Vector3 (tileSize / 2f, barHeight, openDepth / 2f);
+
+			Transform barEastS = Instantiate (barPrefab, Vector3.right * barWidth / 2f + Vector3.back * openPos + barVectorUp, Quaternion.identity) as Transform;
+			barEastS.parent = barHolder;
+			barEastS.localScale = new Vector3 (tileSize / 2f, barHeight, openDepth / 2f);
+		}
 
 		int barPosX = r.Next (map.mapSize.x - barSizeX + 1);
 		int barPosY = r.Next (map.mapSize.y - barSizeY + 1);
