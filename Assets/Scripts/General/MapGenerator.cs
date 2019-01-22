@@ -31,7 +31,6 @@ public class MapGenerator : MonoBehaviour {
 				tileCoords.Add (new Coord (x, y));
 			}
 		}
-		shuffledCoords = new Queue<Coord> (Utility.ShuffleArray (tileCoords.ToArray (), seed + level));
 
 		// Create mapholder object
 		string holderName = "Generated Map";
@@ -52,41 +51,6 @@ public class MapGenerator : MonoBehaviour {
 				tileMap[x, y] = newTile;
 			}
 		}
-
-		// Spawning obstacles
-		bool[, ] obstacleMap = new bool[(int) map.mapSize.x, (int) map.mapSize.y];
-
-		int obstacleCount = (int) (map.mapSize.x * map.mapSize.y * map.obstaclePercent);
-		int currentObstacleCount = 0;
-		List<Coord> openCoords = new List<Coord> (tileCoords);
-
-		for (int i = 0; i < obstacleCount; i++) {
-			Coord randomCoord = getRandomCoord ();
-			obstacleMap[randomCoord.x, randomCoord.y] = true;
-			currentObstacleCount++;
-
-			if (randomCoord != map.mapCentre && MapIsFullyAccessible (obstacleMap, currentObstacleCount)) {
-				float obstacleHeight = Mathf.Lerp (map.minObstacleHeight, map.maxObstacleHeight, (float) r.NextDouble ());
-				Vector3 obstaclePosition = CoordToPosition (randomCoord.x, randomCoord.y);
-
-				Transform newObstacle = Instantiate (obstaclePrefab, obstaclePosition + Vector3.up * obstacleHeight / 2, Quaternion.identity) as Transform;
-				newObstacle.localScale = new Vector3 ((1 - outlinePercent) * tileSize, obstacleHeight, (1 - outlinePercent) * tileSize);
-				newObstacle.parent = mapHolder;
-
-				Renderer render = newObstacle.GetComponent<Renderer> ();
-				Material material = new Material (render.sharedMaterial);
-				float colorPercent = randomCoord.y / (float) map.mapSize.y;
-				material.color = Color.Lerp (map.foregroundColor, map.backgroundColor, colorPercent);
-				render.sharedMaterial = material;
-
-				openCoords.Remove (randomCoord);
-
-			} else {
-				obstacleMap[randomCoord.x, randomCoord.y] = false;
-				currentObstacleCount--;
-			}
-		}
-		shuffledOpenCoords = new Queue<Coord> (Utility.ShuffleArray (openCoords.ToArray (), seed + level));
 
 		// Creating navmesh mask
 		Transform maskLeft = Instantiate (navmeshMaskPrefab, Vector3.left * (map.mapSize.x + maxMapSize.x) / 4f * tileSize, Quaternion.identity) as Transform;
@@ -231,17 +195,86 @@ public class MapGenerator : MonoBehaviour {
 		Vector3 origin = Vector3.right * width / 2f + Vector3.forward * depth / 2f;
 		Vector3 barSize = Vector3.right * barWidth / 2f + Vector3.forward * barDepth / 2f;
 		Vector3 barPos = Vector3.right * barPosX * tileSize + Vector3.forward * barPosY * tileSize;
-		barHolder.position = origin - barSize - barPos;
+		barHolder.position = barSize + barPos - origin;
+
+		// Bar area accessible
+		bool[, ] accessibleMap = new bool[(int) map.mapSize.x, (int) map.mapSize.y];
+		Coord barCentre = new Coord (barPosX + barSizeX / 2, barPosY + barSizeY / 2);
+		accessibleMap[barCentre.x, barCentre.y] = true;
+
+		bool[, ] obstacleMap = new bool[(int) map.mapSize.x, (int) map.mapSize.y];
+		int obstacleCount = (int) (map.mapSize.x * map.mapSize.y * map.obstaclePercent);
+		int currentObstacleCount = 0;
+
+		for (int x = 0; x < barSizeX; x++) {
+			for (int y = 0; y < barSizeY; y++) {
+				tileCoords.Remove (new Coord (x + barPosX, y + barPosY));
+
+				bool isEdge = x == 0 || x == barSizeX - 1 || y == 0 || y == barSizeY - 1;
+				bool hasWall = (!openVertical || x != (int) barSizeX / 2) && (openVertical || y != (int) (barSizeY - 1) / 2); // why barSizeY - 1 ?
+				if (isEdge && hasWall) {
+					obstacleMap[x + barPosX, y + barPosY] = true;
+					currentObstacleCount++;
+				} else if (isEdge) { // edge is at door
+					if (openVertical) {
+						tileCoords.Remove (new Coord (x + barPosX, y + barPosY + 2));
+						tileCoords.Remove (new Coord (x + barPosX, y + barPosY + 1));
+						tileCoords.Remove (new Coord (x + barPosX, y + barPosY - 1));
+						tileCoords.Remove (new Coord (x + barPosX, y + barPosY - 2));
+					} else {
+						tileCoords.Remove (new Coord (x + barPosX + 2, y + barPosY));
+						tileCoords.Remove (new Coord (x + barPosX + 1, y + barPosY));
+						tileCoords.Remove (new Coord (x + barPosX - 1, y + barPosY));
+						tileCoords.Remove (new Coord (x + barPosX - 2, y + barPosY));
+					}
+				}
+			}
+		}
+
+		shuffledCoords = new Queue<Coord> (Utility.ShuffleArray (tileCoords.ToArray (), seed + level));
+		List<Coord> openCoords = new List<Coord> (tileCoords);
+
+		// Spawning obstacles
+		for (int i = 0; i < obstacleCount; i++) {
+			Coord randomCoord = getRandomCoord ();
+			obstacleMap[randomCoord.x, randomCoord.y] = true;
+			currentObstacleCount++;
+
+			if (MapIsFullyAccessible (obstacleMap, currentObstacleCount, accessibleMap, barCentre)) {
+				InstantiateObstacle (r, mapHolder, randomCoord);
+
+				openCoords.Remove (randomCoord);
+			} else {
+				obstacleMap[randomCoord.x, randomCoord.y] = false;
+				currentObstacleCount--;
+			}
+		}
+		shuffledOpenCoords = new Queue<Coord> (Utility.ShuffleArray (openCoords.ToArray (), seed + level));
 	}
 
-	/** Flood-fill algorithm*/
-	bool MapIsFullyAccessible (bool[, ] obstacleMap, int currentObstacleCount) {
-		bool[, ] mapFlags = new bool[obstacleMap.GetLength (0), obstacleMap.GetLength (1)];
-		Queue<Coord> queue = new Queue<Coord> ();
-		queue.Enqueue (map.mapCentre);
-		mapFlags[map.mapCentre.x, map.mapCentre.y] = true;
+	private void InstantiateObstacle (System.Random r, Transform mapHolder, Coord randomCoord) {
+		float obstacleHeight = Mathf.Lerp (map.minObstacleHeight, map.maxObstacleHeight, (float) r.NextDouble ());
+		Vector3 obstaclePosition = CoordToPosition (randomCoord.x, randomCoord.y);
 
-		int accessibleTileCount = 1; // centre accessible
+		Transform newObstacle = Instantiate (obstaclePrefab, obstaclePosition + Vector3.up * obstacleHeight / 2, Quaternion.identity) as Transform;
+		newObstacle.localScale = new Vector3 ((1 - outlinePercent) * tileSize, obstacleHeight, (1 - outlinePercent) * tileSize);
+		newObstacle.parent = mapHolder;
+
+		Renderer render = newObstacle.GetComponent<Renderer> ();
+		Material material = new Material (render.sharedMaterial);
+		float colorPercent = randomCoord.y / (float) map.mapSize.y;
+		material.color = Color.Lerp (map.foregroundColor, map.backgroundColor, colorPercent);
+		render.sharedMaterial = material;
+	}
+
+	/** Flood-fill algorithm */
+	bool MapIsFullyAccessible (bool[, ] obstacleMap, int currentObstacleCount, bool[, ] accessibleMap, Coord barCentre) {
+		bool[, ] mapFlags = new bool[accessibleMap.GetLength (0), accessibleMap.GetLength (1)];
+		System.Array.Copy (accessibleMap, mapFlags, mapFlags.GetLength (0) * mapFlags.GetLength (1));
+		Queue<Coord> queue = new Queue<Coord> ();
+		queue.Enqueue (barCentre);
+
+		int accessibleTileCount = 1;
 
 		while (queue.Count > 0) {
 			Coord tile = queue.Dequeue ();
